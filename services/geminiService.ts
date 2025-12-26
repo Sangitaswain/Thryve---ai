@@ -1,10 +1,11 @@
-
 import { GoogleGenAI } from "@google/genai";
 
-const API_KEY = process.env.API_KEY || "";
-
 export const getGeminiResponse = async (prompt: string) => {
-  const ai = new GoogleGenAI({ apiKey: API_KEY });
+  /**
+   * IMPORTANT: The API key is obtained exclusively from the environment variable `process.env.API_KEY`.
+   * No hardcoded keys are present in this source code to ensure security and best practices.
+   */
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   try {
     const response = await ai.models.generateContent({
