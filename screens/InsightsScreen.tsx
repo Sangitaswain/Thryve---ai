@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { AIInsight } from '../types';
 
 const data = [
   { name: 'Mon', mood: 6, steps: 4200 },
@@ -10,6 +11,30 @@ const data = [
   { name: 'Fri', mood: 6, steps: 9500 },
   { name: 'Sat', mood: 9, steps: 3200 },
   { name: 'Sun', mood: 8, steps: 4800 },
+];
+
+const mockInsights: AIInsight[] = [
+  {
+    id: 'i1',
+    type: 'journaling',
+    icon: '✍️',
+    content: "Journaling for 3 consecutive days shows a positive mood trend. You are 15% more radiant on these days.",
+    suggestion: "Maintain your 3-day streak (demo)"
+  },
+  {
+    id: 'i2',
+    type: 'activity',
+    icon: '⚡',
+    content: "You feel more energetic on days with light physical activity before noon.",
+    suggestion: "A 10-minute walk after lunch (demo)"
+  },
+  {
+    id: 'i3',
+    type: 'hydration',
+    icon: '💧',
+    content: "Hydration goals are missed more often on busy weekdays compared to weekends.",
+    suggestion: "Keep a water bottle at your desk (demo)"
+  }
 ];
 
 const InsightsScreen: React.FC = () => {
@@ -57,6 +82,36 @@ const InsightsScreen: React.FC = () => {
         </div>
       </section>
 
+      {/* AI Insight Cards Section */}
+      <section className="space-y-6">
+        <div className="flex items-center justify-between px-2">
+           <h3 className="font-semibold text-[#1F2933] dark:text-[#E5E7EB] text-xl transition-colors">AI Insights</h3>
+           <span className="text-[9px] font-bold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-widest">Mock Demo</span>
+        </div>
+        
+        <div className="space-y-4">
+          {mockInsights.map((insight) => (
+            <div key={insight.id} className="bg-white dark:bg-[#1E293B] border border-slate-100 dark:border-slate-800 p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">{insight.icon}</span>
+                  <h4 className="text-sm font-semibold text-[#1F2933] dark:text-[#E5E7EB]">AI Insight</h4>
+                </div>
+                <span className="text-[9px] font-bold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">Pattern Found</span>
+              </div>
+              <p className="text-[#1F2933] dark:text-[#E5E7EB] text-sm leading-relaxed font-normal mb-5">
+                {insight.content}
+              </p>
+              <div className="h-px bg-slate-100 dark:bg-slate-800 w-full mb-4"></div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold text-[#4CB8A4] uppercase tracking-widest">Try this:</span>
+                <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] font-medium">{insight.suggestion}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2rem] p-7 shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none transition-colors">
         <div className="flex justify-between items-baseline mb-8 px-1">
           <h3 className="font-semibold text-[#1F2933] dark:text-[#E5E7EB] text-lg transition-colors">Activity</h3>
@@ -69,17 +124,6 @@ const InsightsScreen: React.FC = () => {
               <Bar dataKey="steps" fill="#6EC1E4" radius={[8, 8, 8, 8]} barSize={20} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h3 className="font-semibold text-[#1F2933] dark:text-[#E5E7EB] text-xl ml-2 transition-colors">Insights</h3>
-        <div className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 p-6 rounded-[2rem] flex items-start gap-4 shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none transition-colors">
-          <div className="w-12 h-12 bg-[#4CB8A4]/10 rounded-2xl flex items-center justify-center text-xl shrink-0">⚡</div>
-          <div>
-            <h4 className="font-semibold text-[#1F2933] dark:text-[#E5E7EB] text-sm transition-colors">Consistency Streak</h4>
-            <p className="text-[#6B7280] dark:text-[#9CA3AF] text-xs leading-relaxed mt-1 transition-colors">Logging your mood before 9am leads to 15% better awareness scores.</p>
-          </div>
         </div>
       </section>
     </div>

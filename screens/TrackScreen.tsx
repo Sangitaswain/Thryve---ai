@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import FlipDiceChallenge from '../components/FlipDiceChallenge';
 
 const moods = [
   { emoji: '😔', label: 'Low', activeColor: 'bg-[#FF8A80]/10 border-[#FF8A80] text-[#FF8A80]' },
@@ -101,6 +102,10 @@ const TrackScreen: React.FC = () => {
           <button onClick={() => addWater(250)} className="flex-1 bg-[#F7F9FB] dark:bg-[#0F172A] py-4 rounded-2xl text-[#6EC1E4] font-bold text-[10px] uppercase tracking-widest active:scale-95 transition-all">+ 250ml</button>
           <button onClick={() => addWater(500)} className="flex-1 bg-[#F7F9FB] dark:bg-[#0F172A] py-4 rounded-2xl text-[#6EC1E4] font-bold text-[10px] uppercase tracking-widest active:scale-95 transition-all">+ 500ml</button>
         </div>
+      </section>
+
+      <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <FlipDiceChallenge />
       </section>
 
       <div className="pt-4">

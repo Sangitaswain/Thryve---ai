@@ -82,7 +82,28 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
         <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
       </section>
 
+      {/* AI Insight Highlight Card */}
       <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+        <div className="bg-white dark:bg-[#1E293B] border border-slate-100 dark:border-slate-800 rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">✨</span>
+              <h4 className="text-sm font-semibold text-[#1F2933] dark:text-[#E5E7EB]">AI Insight</h4>
+            </div>
+            <span className="text-[9px] font-bold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">AI-generated insight (mock)</span>
+          </div>
+          <p className="text-[#1F2933] dark:text-[#E5E7EB] text-sm leading-relaxed font-normal mb-5">
+            We noticed that on days when you sleep less than 6 hours, your mood score tends to be 20% lower.
+          </p>
+          <div className="h-px bg-slate-100 dark:bg-slate-800 w-full mb-4"></div>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold text-[#4CB8A4] uppercase tracking-widest">Try this:</span>
+            <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] font-medium">Sleep 30 minutes earlier tonight (demo)</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
         <div className="flex justify-between items-center mb-5">
           <h3 className="text-[#1F2933] dark:text-[#E5E7EB] font-semibold text-xl tracking-tight transition-colors">Daily Summary</h3>
         </div>
@@ -102,24 +123,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
         </div>
       </section>
 
-      <section className="bg-white dark:bg-[#1E293B] border border-slate-50 dark:border-slate-800 rounded-[2rem] p-8 relative overflow-hidden shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none transition-colors">
-        <p className="text-[#1F2933]/80 dark:text-[#E5E7EB]/80 text-lg font-normal italic leading-relaxed mb-4">
-          "The secret of your future is hidden in your daily routine."
-        </p>
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-px bg-[#4CB8A4]"></div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#4CB8A4]">Mike Murdock</p>
-        </div>
-      </section>
-
       <section 
         onClick={onNavigateToChat}
         className="bg-white dark:bg-[#1E293B] rounded-[2rem] p-7 text-[#1F2933] dark:text-[#E5E7EB] border border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-[#263345] transition-all flex items-center justify-between shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none active:scale-95"
       >
         <div className="space-y-1">
           <p className="text-[#4CB8A4] text-[10px] font-bold uppercase tracking-widest">AI Wellness Coach</p>
-          <h4 className="font-semibold text-xl tracking-tight">Sleep Optimization</h4>
-          <p className="text-[#6B7280] dark:text-[#9CA3AF] text-sm font-normal">Try this 5m prep routine.</p>
+          <h4 className="font-semibold text-xl tracking-tight">Personalized Chat</h4>
+          <p className="text-[#6B7280] dark:text-[#9CA3AF] text-sm font-normal">Ask anything about your health.</p>
         </div>
         <div className="w-12 h-12 bg-[#4CB8A4]/10 dark:bg-[#4CB8A4]/10 rounded-2xl flex items-center justify-center border border-[#4CB8A4]/20 dark:border-[#4CB8A4]/30">
           <svg className="w-5 h-5 text-[#4CB8A4] dark:text-[#4CB8A4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>

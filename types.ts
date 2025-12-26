@@ -24,3 +24,11 @@ export interface Habit {
   completed: boolean;
   category: string;
 }
+
+export interface AIInsight {
+  id: string;
+  type: 'sleep' | 'mood' | 'activity' | 'hydration' | 'journaling';
+  content: string;
+  suggestion: string;
+  icon: string;
+}
