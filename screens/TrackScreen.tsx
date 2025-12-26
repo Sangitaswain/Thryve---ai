@@ -33,8 +33,8 @@ const TrackScreen: React.FC = () => {
         <div className="w-32 h-32 bg-[#A8E6CF]/20 rounded-[2.5rem] flex items-center justify-center text-6xl shadow-xl shadow-[#A8E6CF]/10 mb-8 animate-bounce">
           ✨
         </div>
-        <h2 className="text-[28px] font-semibold text-[#1F2933] tracking-tight mb-2">Well Logged!</h2>
-        <p className="text-[#6B7280] font-normal leading-relaxed px-8">
+        <h2 className="text-[28px] font-semibold text-[#1F2933] dark:text-[#E5E7EB] tracking-tight mb-2 transition-colors">Well Logged!</h2>
+        <p className="text-[#6B7280] dark:text-[#9CA3AF] font-normal leading-relaxed px-8 transition-colors">
           Your entry is saved. Consistency is the key to thriving.
         </p>
         <button 
@@ -50,19 +50,19 @@ const TrackScreen: React.FC = () => {
   return (
     <div className="p-6 pt-12 space-y-10 pb-32">
       <header className="animate-in fade-in duration-500">
-        <h1 className="text-[28px] font-semibold text-[#1F2933] tracking-tight leading-tight">Daily Log</h1>
-        <p className="text-[#6B7280] text-sm font-normal mt-1">Check-in with yourself.</p>
+        <h1 className="text-[28px] font-semibold text-[#1F2933] dark:text-[#E5E7EB] tracking-tight leading-tight transition-colors">Daily Log</h1>
+        <p className="text-[#6B7280] dark:text-[#9CA3AF] text-sm font-normal mt-1 transition-colors">Check-in with yourself.</p>
       </header>
 
       <section className="space-y-4">
-        <label className="text-[10px] font-bold text-[#6B7280] uppercase tracking-[0.2em] ml-2">How are you feeling?</label>
+        <label className="text-[10px] font-bold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-[0.2em] ml-2 transition-colors">How are you feeling?</label>
         <div className="flex justify-between items-center gap-2">
           {moods.map((m, idx) => (
             <button
               key={idx}
               onClick={() => setSelectedMood(idx)}
               className={`flex-1 flex flex-col items-center gap-2 p-4 rounded-3xl transition-all border-2 active:scale-90 ${
-                selectedMood === idx ? m.activeColor : 'border-transparent bg-white text-slate-300'
+                selectedMood === idx ? m.activeColor : 'border-transparent bg-white dark:bg-[#1E293B] text-slate-300 dark:text-slate-600'
               }`}
             >
               <span className="text-3xl">{m.emoji}</span>
@@ -72,34 +72,34 @@ const TrackScreen: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-white p-7 rounded-[2rem] shadow-[0_8px_20px_rgb(0,0,0,0.02)] space-y-5">
+      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 p-7 rounded-[2rem] shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none space-y-5 transition-colors">
         <div className="flex justify-between items-center px-1">
-          <label className="text-[10px] font-bold text-[#6B7280] uppercase tracking-[0.2em]">Sleep Quality</label>
+          <label className="text-[10px] font-bold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-[0.2em] transition-colors">Sleep Quality</label>
           <span className="text-[#4CB8A4] font-bold text-lg">{sleepHours} hrs</span>
         </div>
         <input 
           type="range" min="0" max="12" step="0.5" value={sleepHours}
           onChange={(e) => setSleepHours(parseFloat(e.target.value))}
-          className="w-full h-2 bg-slate-100 rounded-full appearance-none cursor-pointer accent-[#4CB8A4]"
+          className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#4CB8A4]"
         />
       </section>
 
-      <section className="bg-white p-7 rounded-[2rem] shadow-[0_8px_20px_rgb(0,0,0,0.02)] space-y-6">
+      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 p-7 rounded-[2rem] shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none space-y-6 transition-colors">
         <div className="flex justify-between items-end px-1">
           <div>
-            <label className="text-[10px] font-bold text-[#6B7280] uppercase tracking-[0.2em]">Hydration</label>
+            <label className="text-[10px] font-bold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-[0.2em] transition-colors">Hydration</label>
             <div className="flex items-baseline gap-1 mt-1">
-              <span className="text-4xl font-bold text-[#1F2933]">{(waterAmount / 1000).toFixed(1)}</span>
-              <span className="text-[#6B7280] font-bold text-sm uppercase">Liters</span>
+              <span className="text-4xl font-bold text-[#1F2933] dark:text-[#E5E7EB] transition-colors">{(waterAmount / 1000).toFixed(1)}</span>
+              <span className="text-[#6B7280] dark:text-[#9CA3AF] font-bold text-sm uppercase transition-colors">Liters</span>
             </div>
           </div>
-          <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div className="w-24 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
              <div className="bg-[#6EC1E4] h-full transition-all duration-700" style={{ width: `${Math.min(100, (waterAmount / 2500) * 100)}%` }}></div>
           </div>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => addWater(250)} className="flex-1 bg-[#F7F9FB] py-4 rounded-2xl text-[#6EC1E4] font-bold text-[10px] uppercase tracking-widest active:scale-95 transition-all">+ 250ml</button>
-          <button onClick={() => addWater(500)} className="flex-1 bg-[#F7F9FB] py-4 rounded-2xl text-[#6EC1E4] font-bold text-[10px] uppercase tracking-widest active:scale-95 transition-all">+ 500ml</button>
+          <button onClick={() => addWater(250)} className="flex-1 bg-[#F7F9FB] dark:bg-[#0F172A] py-4 rounded-2xl text-[#6EC1E4] font-bold text-[10px] uppercase tracking-widest active:scale-95 transition-all">+ 250ml</button>
+          <button onClick={() => addWater(500)} className="flex-1 bg-[#F7F9FB] dark:bg-[#0F172A] py-4 rounded-2xl text-[#6EC1E4] font-bold text-[10px] uppercase tracking-widest active:scale-95 transition-all">+ 500ml</button>
         </div>
       </section>
 

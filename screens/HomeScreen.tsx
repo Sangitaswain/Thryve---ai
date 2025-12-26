@@ -4,6 +4,8 @@ import { MetricCard } from '../types';
 
 interface HomeScreenProps {
   onNavigateToChat: () => void;
+  isDarkMode: boolean;
+  toggleTheme: () => void;
 }
 
 const wellnessMetrics: MetricCard[] = [
@@ -13,9 +15,8 @@ const wellnessMetrics: MetricCard[] = [
   { title: 'Hydration', value: '1.5', unit: 'L', icon: '💧', color: 'bg-[#6EC1E4]/10 text-[#6EC1E4] border-[#6EC1E4]/30' },
 ];
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat }) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, toggleTheme }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [isEmpty, setIsEmpty] = useState(false);
   
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
@@ -26,56 +27,39 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat }) => {
 
   if (isLoading) {
     return (
-      <div className="p-6 pt-12 space-y-8 pb-32">
+      <div className="p-6 pt-12 space-y-8 pb-32 bg-[#F7F9FB] dark:bg-[#0F172A] min-h-screen">
         <header className="flex justify-between items-start animate-pulse">
           <div className="space-y-3">
-            <div className="h-3 w-24 bg-slate-100 rounded-full"></div>
-            <div className="h-10 w-48 bg-slate-100 rounded-2xl"></div>
+            <div className="h-3 w-24 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
+            <div className="h-10 w-48 bg-slate-100 dark:bg-slate-800 rounded-2xl"></div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-slate-100"></div>
+          <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800"></div>
         </header>
-        <div className="h-44 w-full bg-slate-100 rounded-[2.5rem] animate-pulse"></div>
+        <div className="h-44 w-full bg-slate-100 dark:bg-slate-800 rounded-[2.5rem] animate-pulse"></div>
         <div className="grid grid-cols-2 gap-4">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-32 bg-slate-50 border border-slate-100 rounded-[2.2rem] animate-pulse"></div>
+            <div key={i} className="h-32 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[2.2rem] animate-pulse"></div>
           ))}
         </div>
       </div>
     );
   }
 
-  if (isEmpty) {
-    return (
-      <div className="p-6 pt-12 space-y-10 flex flex-col items-center justify-center min-h-[80vh] text-center animate-in fade-in duration-700">
-        <div className="w-48 h-48 bg-[#4CB8A4]/10 rounded-full flex items-center justify-center text-6xl relative">
-          🌱
-          <div className="absolute top-0 right-0 w-12 h-12 bg-white rounded-2xl shadow-lg flex items-center justify-center text-2xl animate-bounce">✨</div>
-        </div>
-        <div className="space-y-3 px-4">
-          <h2 className="text-[28px] font-semibold text-[#1F2933] tracking-tight">Your Thryve Journey</h2>
-          <p className="text-[#6B7280] font-normal leading-relaxed">
-            Every great habit begins with a single log. Let's capture your first data point.
-          </p>
-        </div>
-        <button 
-          onClick={() => setIsEmpty(false)}
-          className="bg-[#4CB8A4] text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg shadow-[#4CB8A4]/20 active:scale-95 transition-all"
-        >
-          Start Logging
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <div className="p-6 pt-12 space-y-8 pb-32">
+    <div className="p-6 pt-12 space-y-8 pb-32 bg-[#F7F9FB] dark:bg-[#0F172A] min-h-screen transition-colors duration-500">
       <header className="flex justify-between items-start animate-in fade-in slide-in-from-top-4 duration-500">
         <div>
           <p className="text-[#4CB8A4] text-[10px] font-bold uppercase tracking-[0.2em] mb-1.5">{today}</p>
-          <h1 className="text-[28px] font-semibold text-[#1F2933] tracking-tight leading-tight">Good Morning,<br/>Alex</h1>
+          <h1 className="text-[28px] font-semibold text-[#1F2933] dark:text-[#E5E7EB] tracking-tight leading-tight transition-colors">Good Morning,<br/>Alex</h1>
         </div>
         <div className="flex gap-2">
-          <button className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center shadow-sm text-xl active:scale-90 transition-all hover:border-[#4CB8A4]/30 group">
+          <button 
+            onClick={toggleTheme}
+            className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-slate-100 dark:border-slate-800 flex items-center justify-center shadow-sm text-xl active:scale-90 transition-all hover:border-[#4CB8A4]/30"
+          >
+            {isDarkMode ? '☀️' : '🌙'}
+          </button>
+          <button className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-slate-100 dark:border-slate-800 flex items-center justify-center shadow-sm text-xl active:scale-90 transition-all hover:border-[#4CB8A4]/30 group">
             <span className="group-hover:rotate-12 transition-transform">🔔</span>
           </button>
         </div>
@@ -100,26 +84,26 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat }) => {
 
       <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
         <div className="flex justify-between items-center mb-5">
-          <h3 className="text-[#1F2933] font-semibold text-xl tracking-tight">Daily Summary</h3>
+          <h3 className="text-[#1F2933] dark:text-[#E5E7EB] font-semibold text-xl tracking-tight transition-colors">Daily Summary</h3>
         </div>
         <div className="grid grid-cols-2 gap-4">
           {wellnessMetrics.map((m, idx) => (
-            <div key={idx} className="bg-white border border-slate-50 rounded-[2rem] p-6 shadow-[0_8px_20px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_20px_rgb(0,0,0,0.04)] transition-all group active:scale-[0.98]">
+            <div key={idx} className="bg-white dark:bg-[#1E293B] border border-slate-50 dark:border-slate-800 rounded-[2rem] p-6 shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none transition-all group active:scale-[0.98]">
               <div className={`${m.color} w-10 h-10 rounded-2xl flex items-center justify-center mb-4 text-2xl border transition-transform group-hover:-translate-y-1`}>
                 {m.icon}
               </div>
-              <p className="text-[#6B7280] text-[10px] font-bold mb-1 uppercase tracking-widest">{m.title}</p>
+              <p className="text-[#6B7280] dark:text-[#9CA3AF] text-[10px] font-bold mb-1 uppercase tracking-widest">{m.title}</p>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-semibold text-[#1F2933] tracking-tight">{m.value}</span>
-                {m.unit && <span className="text-[#6B7280] font-medium text-xs">{m.unit}</span>}
+                <span className="text-2xl font-semibold text-[#1F2933] dark:text-[#E5E7EB] tracking-tight">{m.value}</span>
+                {m.unit && <span className="text-[#6B7280] dark:text-[#9CA3AF] font-medium text-xs">{m.unit}</span>}
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="bg-white border border-slate-50 rounded-[2rem] p-8 relative overflow-hidden shadow-[0_8px_20px_rgb(0,0,0,0.02)]">
-        <p className="text-[#1F2933]/80 text-lg font-normal italic leading-relaxed mb-4">
+      <section className="bg-white dark:bg-[#1E293B] border border-slate-50 dark:border-slate-800 rounded-[2rem] p-8 relative overflow-hidden shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none transition-colors">
+        <p className="text-[#1F2933]/80 dark:text-[#E5E7EB]/80 text-lg font-normal italic leading-relaxed mb-4">
           "The secret of your future is hidden in your daily routine."
         </p>
         <div className="flex items-center gap-2">
@@ -130,15 +114,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat }) => {
 
       <section 
         onClick={onNavigateToChat}
-        className="bg-[#1F2933] rounded-[2rem] p-7 text-white cursor-pointer hover:bg-[#2D3748] transition-all flex items-center justify-between shadow-lg shadow-slate-100 active:scale-95"
+        className="bg-white dark:bg-[#1E293B] rounded-[2rem] p-7 text-[#1F2933] dark:text-[#E5E7EB] border border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-[#263345] transition-all flex items-center justify-between shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none active:scale-95"
       >
         <div className="space-y-1">
           <p className="text-[#4CB8A4] text-[10px] font-bold uppercase tracking-widest">AI Wellness Coach</p>
           <h4 className="font-semibold text-xl tracking-tight">Sleep Optimization</h4>
-          <p className="text-white/60 text-sm font-normal">Try this 5m prep routine.</p>
+          <p className="text-[#6B7280] dark:text-[#9CA3AF] text-sm font-normal">Try this 5m prep routine.</p>
         </div>
-        <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10">
-          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
+        <div className="w-12 h-12 bg-[#4CB8A4]/10 dark:bg-[#4CB8A4]/10 rounded-2xl flex items-center justify-center border border-[#4CB8A4]/20 dark:border-[#4CB8A4]/30">
+          <svg className="w-5 h-5 text-[#4CB8A4] dark:text-[#4CB8A4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
         </div>
       </section>
     </div>
