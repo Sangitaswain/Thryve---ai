@@ -42,8 +42,8 @@ const InsightsScreen: React.FC = () => {
 
   if (!hasData) {
     return (
-      <div className="p-6 pt-12 flex flex-col items-center justify-center min-h-[80vh] text-center animate-in fade-in duration-500">
-        <div className="w-24 h-24 bg-slate-50 dark:bg-[#1E293B] rounded-3xl flex items-center justify-center text-4xl mb-6">📊</div>
+      <div className="p-6 pt-12 flex flex-col items-center justify-center min-h-[80vh] text-center bg-[#EEF2F6] dark:bg-[#0F172A] animate-in fade-in duration-500">
+        <div className="w-24 h-24 bg-white dark:bg-[#1E293B] shadow-sm rounded-3xl flex items-center justify-center text-4xl mb-6">📊</div>
         <h2 className="text-2xl font-semibold text-[#1F2933] dark:text-[#E5E7EB] transition-colors">Awaiting History</h2>
         <p className="text-[#6B7280] dark:text-[#9CA3AF] text-sm mt-2 px-8 transition-colors">Patterns will appear once you have 3+ logs.</p>
         <button onClick={() => setHasData(true)} className="mt-8 text-[#4CB8A4] font-bold text-[10px] uppercase tracking-widest">Simulate Data</button>
@@ -52,13 +52,13 @@ const InsightsScreen: React.FC = () => {
   }
 
   return (
-    <div className="p-6 pt-12 space-y-10 pb-32">
-      <header className="animate-in fade-in duration-500">
+    <div className="p-6 pt-12 space-y-10 pb-32 bg-[#EEF2F6] dark:bg-[#0F172A] min-h-screen transition-colors duration-500">
+      <header className="animate-in fade-in duration-500 px-2">
         <h1 className="text-[28px] font-semibold text-[#1F2933] dark:text-[#E5E7EB] tracking-tight transition-colors">Your Progress</h1>
         <p className="text-[#6B7280] dark:text-[#9CA3AF] text-sm mt-1 transition-colors">Holistic patterns for the week.</p>
       </header>
 
-      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2rem] p-7 shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none transition-colors">
+      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2rem] p-7 shadow-[0_16px_48px_rgba(0,0,0,0.05)] dark:shadow-none transition-colors">
         <div className="flex justify-between items-center mb-8 px-1">
           <div>
             <h3 className="font-semibold text-[#1F2933] dark:text-[#E5E7EB] text-lg transition-colors">Mood Flow</h3>
@@ -91,7 +91,7 @@ const InsightsScreen: React.FC = () => {
         
         <div className="space-y-4">
           {mockInsights.map((insight) => (
-            <div key={insight.id} className="bg-white dark:bg-[#1E293B] border border-slate-100 dark:border-slate-800 p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div key={insight.id} className="bg-white dark:bg-[#1E293B] border border-slate-100 dark:border-slate-800 p-6 rounded-[2rem] shadow-[0_16px_48px_rgba(0,0,0,0.05)] transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{insight.icon}</span>
@@ -112,7 +112,7 @@ const InsightsScreen: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2rem] p-7 shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none transition-colors">
+      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2rem] p-7 shadow-[0_16px_48px_rgba(0,0,0,0.05)] dark:shadow-none transition-colors">
         <div className="flex justify-between items-baseline mb-8 px-1">
           <h3 className="font-semibold text-[#1F2933] dark:text-[#E5E7EB] text-lg transition-colors">Activity</h3>
           <span className="text-[9px] text-[#4CB8A4] font-bold uppercase tracking-widest bg-[#A8E6CF]/10 px-3 py-1 rounded-full border border-[#A8E6CF]/30 transition-colors">+12% vs last week</span>

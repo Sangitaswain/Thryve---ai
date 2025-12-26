@@ -30,7 +30,7 @@ const TrackScreen: React.FC = () => {
 
   if (showSuccess) {
     return (
-      <div className="p-6 pt-12 flex flex-col items-center justify-center min-h-[80vh] text-center animate-in zoom-in-95 duration-500">
+      <div className="p-6 pt-12 flex flex-col items-center justify-center min-h-[80vh] text-center bg-[#EEF2F6] dark:bg-[#0F172A] animate-in zoom-in-95 duration-500">
         <div className="w-32 h-32 bg-[#A8E6CF]/20 rounded-[2.5rem] flex items-center justify-center text-6xl shadow-xl shadow-[#A8E6CF]/10 mb-8 animate-bounce">
           ✨
         </div>
@@ -49,8 +49,8 @@ const TrackScreen: React.FC = () => {
   }
 
   return (
-    <div className="p-6 pt-12 space-y-10 pb-32">
-      <header className="animate-in fade-in duration-500">
+    <div className="p-6 pt-12 space-y-10 pb-32 bg-[#EEF2F6] dark:bg-[#0F172A] min-h-screen transition-colors duration-500">
+      <header className="animate-in fade-in duration-500 px-2">
         <h1 className="text-[28px] font-semibold text-[#1F2933] dark:text-[#E5E7EB] tracking-tight leading-tight transition-colors">Daily Log</h1>
         <p className="text-[#6B7280] dark:text-[#9CA3AF] text-sm font-normal mt-1 transition-colors">Check-in with yourself.</p>
       </header>
@@ -62,7 +62,7 @@ const TrackScreen: React.FC = () => {
             <button
               key={idx}
               onClick={() => setSelectedMood(idx)}
-              className={`flex-1 flex flex-col items-center gap-2 p-4 rounded-3xl transition-all border-2 active:scale-90 ${
+              className={`flex-1 flex flex-col items-center gap-2 p-4 rounded-3xl transition-all border-2 active:scale-90 shadow-sm ${
                 selectedMood === idx ? m.activeColor : 'border-transparent bg-white dark:bg-[#1E293B] text-slate-300 dark:text-slate-600'
               }`}
             >
@@ -73,7 +73,7 @@ const TrackScreen: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 p-7 rounded-[2rem] shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none space-y-5 transition-colors">
+      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 p-7 rounded-[2rem] shadow-[0_16px_48px_rgba(0,0,0,0.05)] dark:shadow-none space-y-5 transition-colors">
         <div className="flex justify-between items-center px-1">
           <label className="text-[10px] font-bold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-[0.2em] transition-colors">Sleep Quality</label>
           <span className="text-[#4CB8A4] font-bold text-lg">{sleepHours} hrs</span>
@@ -85,7 +85,7 @@ const TrackScreen: React.FC = () => {
         />
       </section>
 
-      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 p-7 rounded-[2rem] shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none space-y-6 transition-colors">
+      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 p-7 rounded-[2rem] shadow-[0_16px_48px_rgba(0,0,0,0.05)] dark:shadow-none space-y-6 transition-colors">
         <div className="flex justify-between items-end px-1">
           <div>
             <label className="text-[10px] font-bold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-[0.2em] transition-colors">Hydration</label>
@@ -99,8 +99,8 @@ const TrackScreen: React.FC = () => {
           </div>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => addWater(250)} className="flex-1 bg-[#F7F9FB] dark:bg-[#0F172A] py-4 rounded-2xl text-[#6EC1E4] font-bold text-[10px] uppercase tracking-widest active:scale-95 transition-all">+ 250ml</button>
-          <button onClick={() => addWater(500)} className="flex-1 bg-[#F7F9FB] dark:bg-[#0F172A] py-4 rounded-2xl text-[#6EC1E4] font-bold text-[10px] uppercase tracking-widest active:scale-95 transition-all">+ 500ml</button>
+          <button onClick={() => addWater(250)} className="flex-1 bg-slate-50 dark:bg-[#0F172A] py-4 rounded-2xl text-[#6EC1E4] font-bold text-[10px] uppercase tracking-widest active:scale-95 transition-all">+ 250ml</button>
+          <button onClick={() => addWater(500)} className="flex-1 bg-slate-50 dark:bg-[#0F172A] py-4 rounded-2xl text-[#6EC1E4] font-bold text-[10px] uppercase tracking-widest active:scale-95 transition-all">+ 500ml</button>
         </div>
       </section>
 
@@ -108,11 +108,11 @@ const TrackScreen: React.FC = () => {
         <FlipDiceChallenge />
       </section>
 
-      <div className="pt-4">
+      <div className="pt-4 px-2">
         <button 
           onClick={handleComplete}
           disabled={isSubmitting}
-          className="w-full bg-[#4CB8A4] text-white py-5 rounded-full font-bold text-lg shadow-lg shadow-[#4CB8A4]/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-70"
+          className="w-full bg-[#4CB8A4] text-white py-5 rounded-[2rem] font-bold text-lg shadow-lg shadow-[#4CB8A4]/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-70"
         >
           {isSubmitting ? 'Syncing...' : 'Complete Daily Log'}
         </button>

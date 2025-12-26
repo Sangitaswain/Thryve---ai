@@ -27,7 +27,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
 
   if (isLoading) {
     return (
-      <div className="p-6 pt-12 space-y-8 pb-32 bg-[#F7F9FB] dark:bg-[#0F172A] min-h-screen">
+      <div className="p-6 pt-12 space-y-8 pb-32 bg-[#EEF2F6] dark:bg-[#0F172A] min-h-screen">
         <header className="flex justify-between items-start animate-pulse">
           <div className="space-y-3">
             <div className="h-3 w-24 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
@@ -46,7 +46,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
   }
 
   return (
-    <div className="p-6 pt-12 space-y-8 pb-32 bg-[#F7F9FB] dark:bg-[#0F172A] min-h-screen transition-colors duration-500">
+    <div className="p-6 pt-12 space-y-8 pb-32 bg-[#EEF2F6] dark:bg-[#0F172A] min-h-screen transition-colors duration-500">
       <header className="flex justify-between items-start animate-in fade-in slide-in-from-top-4 duration-500">
         <div>
           <p className="text-[#4CB8A4] text-[10px] font-bold uppercase tracking-[0.2em] mb-1.5">{today}</p>
@@ -65,7 +65,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
         </div>
       </header>
 
-      <section className="bg-gradient-to-br from-[#4CB8A4] to-[#6EC1E4] rounded-[2.5rem] p-7 text-white shadow-xl shadow-[#4CB8A4]/10 relative overflow-hidden group animate-in fade-in zoom-in-95 duration-700">
+      <section className="bg-gradient-to-br from-[#4CB8A4] to-[#6EC1E4] rounded-[2.5rem] p-7 text-white shadow-xl shadow-[#4CB8A4]/20 relative overflow-hidden group animate-in fade-in zoom-in-95 duration-700">
         <div className="relative z-10 flex items-center justify-between">
           <div className="space-y-1">
             <h3 className="text-white/70 text-[10px] font-bold uppercase tracking-[0.2em]">Current Streak</h3>
@@ -84,7 +84,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
 
       {/* AI Insight Highlight Card */}
       <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-        <div className="bg-white dark:bg-[#1E293B] border border-slate-100 dark:border-slate-800 rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all">
+        <div className="bg-white dark:bg-[#1E293B] border border-slate-100 dark:border-slate-800 rounded-[2rem] p-6 shadow-[0_16px_48px_rgba(0,0,0,0.05)] transition-all">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <span className="text-lg">✨</span>
@@ -109,7 +109,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
         </div>
         <div className="grid grid-cols-2 gap-4">
           {wellnessMetrics.map((m, idx) => (
-            <div key={idx} className="bg-white dark:bg-[#1E293B] border border-slate-50 dark:border-slate-800 rounded-[2rem] p-6 shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none transition-all group active:scale-[0.98]">
+            <div key={idx} className="bg-white dark:bg-[#1E293B] border border-slate-50 dark:border-slate-800 rounded-[2rem] p-6 shadow-[0_12px_30px_rgba(0,0,0,0.04)] dark:shadow-none transition-all group active:scale-[0.98]">
               <div className={`${m.color} w-10 h-10 rounded-2xl flex items-center justify-center mb-4 text-2xl border transition-transform group-hover:-translate-y-1`}>
                 {m.icon}
               </div>
@@ -125,7 +125,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
 
       <section 
         onClick={onNavigateToChat}
-        className="bg-white dark:bg-[#1E293B] rounded-[2rem] p-7 text-[#1F2933] dark:text-[#E5E7EB] border border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-[#263345] transition-all flex items-center justify-between shadow-[0_8px_20px_rgb(0,0,0,0.02)] dark:shadow-none active:scale-95"
+        className="bg-white dark:bg-[#1E293B] rounded-[2rem] p-7 text-[#1F2933] dark:text-[#E5E7EB] border border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-[#263345] transition-all flex items-center justify-between shadow-[0_12px_30px_rgba(0,0,0,0.04)] dark:shadow-none active:scale-95"
       >
         <div className="space-y-1">
           <p className="text-[#4CB8A4] text-[10px] font-bold uppercase tracking-widest">AI Wellness Coach</p>

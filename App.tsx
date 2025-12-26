@@ -16,23 +16,23 @@ const App: React.FC = () => {
   const renderScreen = () => {
     switch (activeTab) {
       case 'home': 
-        return <div key="home" className="animate-in fade-in slide-in-from-bottom-2 duration-500 bg-[#F7F9FB] dark:bg-[#0F172A]">
+        return <div key="home" className="animate-in fade-in slide-in-from-bottom-2 duration-500">
           <HomeScreen onNavigateToChat={() => setActiveTab('chat')} isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
         </div>;
       case 'track': 
-        return <div key="track" className="animate-in fade-in slide-in-from-bottom-2 duration-500 bg-[#F7F9FB] dark:bg-[#0F172A]">
+        return <div key="track" className="animate-in fade-in slide-in-from-bottom-2 duration-500">
           <TrackScreen />
         </div>;
       case 'insights': 
-        return <div key="insights" className="animate-in fade-in slide-in-from-bottom-2 duration-500 bg-[#F7F9FB] dark:bg-[#0F172A]">
+        return <div key="insights" className="animate-in fade-in slide-in-from-bottom-2 duration-500">
           <InsightsScreen />
         </div>;
       case 'profile': 
-        return <div key="profile" className="animate-in fade-in slide-in-from-bottom-2 duration-500 bg-[#F7F9FB] dark:bg-[#0F172A]">
+        return <div key="profile" className="animate-in fade-in slide-in-from-bottom-2 duration-500">
           <ProfileScreen isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
         </div>;
       case 'chat': 
-        return <div key="chat" className="animate-in fade-in duration-300 bg-[#F7F9FB] dark:bg-[#0F172A]">
+        return <div key="chat" className="animate-in fade-in duration-300">
           <ChatScreen onBack={() => setActiveTab('home')} isDarkMode={isDarkMode} />
         </div>;
       default: 
@@ -42,12 +42,12 @@ const App: React.FC = () => {
 
   return (
     <div className={isDarkMode ? 'dark' : ''}>
-      <div className="flex flex-col h-screen overflow-hidden bg-[#F7F9FB] dark:bg-[#0F172A] text-[#1F2933] dark:text-[#E5E7EB] transition-colors duration-500">
+      <div className="flex flex-col h-screen overflow-hidden bg-[#EEF2F6] dark:bg-[#0F172A] text-[#1F2933] dark:text-[#E5E7EB] transition-colors duration-500">
         <main className="flex-1 overflow-y-auto pb-24 scroll-smooth">
           {renderScreen()}
         </main>
 
-        <nav className="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 flex justify-around items-center py-4 px-2 z-50 rounded-t-[2.5rem] shadow-[0_-8px_30px_rgb(0,0,0,0.03)] dark:shadow-none transition-colors duration-500">
+        <nav className="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 flex justify-around items-center py-4 px-2 z-50 rounded-t-[2.5rem] shadow-[0_-8px_30px_rgb(0,0,0,0.04)] dark:shadow-none transition-colors duration-500">
           <TabButton 
             isActive={activeTab === 'home'} 
             onClick={() => setActiveTab('home')} 

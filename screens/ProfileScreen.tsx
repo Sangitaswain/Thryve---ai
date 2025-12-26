@@ -8,10 +8,10 @@ interface ProfileScreenProps {
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ isDarkMode, toggleTheme }) => {
   return (
-    <div className="p-6 pt-12 space-y-8 pb-24 animate-in fade-in duration-500">
+    <div className="p-6 pt-12 space-y-8 pb-32 bg-[#EEF2F6] dark:bg-[#0F172A] min-h-screen animate-in fade-in duration-500 transition-colors duration-500">
       <header className="flex flex-col items-center text-center">
         <div className="relative mb-4">
-          <div className="w-28 h-28 rounded-[2.5rem] bg-[#4CB8A4]/10 border-4 border-white dark:border-[#1E293B] shadow-xl overflow-hidden flex items-center justify-center transition-colors">
+          <div className="w-28 h-28 rounded-[2.5rem] bg-white dark:bg-[#1E293B] border-4 border-white dark:border-[#1E293B] shadow-xl overflow-hidden flex items-center justify-center transition-colors">
             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Profile" className="w-full h-full object-cover" />
           </div>
           <button className="absolute -bottom-1 -right-1 w-10 h-10 bg-[#4CB8A4] rounded-2xl border-4 border-white dark:border-[#1E293B] flex items-center justify-center text-white shadow-lg shadow-[#4CB8A4]/20 transition-colors">
@@ -22,7 +22,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ isDarkMode, toggleTheme }
         <p className="text-[#6B7280] dark:text-[#9CA3AF] text-sm font-medium transition-colors">Wellness Enthusiast</p>
       </header>
 
-      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-none flex justify-around items-center transition-colors">
+      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2.5rem] p-6 shadow-[0_16px_48px_rgba(0,0,0,0.05)] dark:shadow-none flex justify-around items-center transition-colors">
         <div className="text-center">
           <p className="text-[#4CB8A4] text-2xl font-bold">14</p>
           <p className="text-[10px] text-[#6B7280] dark:text-[#9CA3AF] font-bold uppercase tracking-widest transition-colors">Streak</p>
@@ -41,7 +41,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ isDarkMode, toggleTheme }
 
       <section className="space-y-4">
         <h3 className="text-[#1F2933] dark:text-[#E5E7EB] font-semibold text-lg ml-2 transition-colors">Settings</h3>
-        <div className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-none overflow-hidden transition-colors">
+        <div className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2rem] shadow-[0_16px_48px_rgba(0,0,0,0.05)] dark:shadow-none overflow-hidden transition-colors">
           <div className="flex items-center justify-between p-5 border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 bg-slate-50 dark:bg-[#0F172A] rounded-xl flex items-center justify-center text-lg">{isDarkMode ? '🌙' : '☀️'}</div>

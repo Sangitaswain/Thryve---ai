@@ -57,7 +57,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#F7F9FB] dark:bg-[#0F172A] transition-colors duration-500">
+    <div className="flex flex-col h-screen bg-[#EEF2F6] dark:bg-[#0F172A] transition-colors duration-500">
       {/* Header */}
       <header className="bg-white dark:bg-[#1E293B] p-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-4 sticky top-0 z-20 transition-colors">
         <button onClick={onBack} className="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full text-slate-500 dark:text-[#9CA3AF] transition-colors">
@@ -82,7 +82,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
             <div className={`max-w-[85%] p-4 rounded-3xl ${
               msg.role === 'user' 
               ? 'bg-[#4CB8A4] text-white rounded-br-none shadow-md' 
-              : 'bg-white dark:bg-[#1E293B] text-[#1F2933] dark:text-[#E5E7EB] border border-slate-100 dark:border-slate-800 shadow-sm rounded-bl-none transition-colors'
+              : 'bg-white dark:bg-[#1E293B] text-[#1F2933] dark:text-[#E5E7EB] border border-slate-100 dark:border-slate-800 shadow-[0_4px_12px_rgba(0,0,0,0.03)] rounded-bl-none transition-colors'
             }`}>
               <p className="text-sm leading-relaxed whitespace-pre-wrap font-normal">{msg.content}</p>
               <p className={`text-[9px] mt-2 font-medium opacity-50 ${msg.role === 'user' ? 'text-white/80' : 'text-[#6B7280] dark:text-[#9CA3AF] transition-colors'}`}>
@@ -108,7 +108,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
 
       {/* Input Area */}
       <div className="p-4 bg-white dark:bg-[#1E293B] border-t border-slate-100 dark:border-slate-800 flex items-center gap-3 transition-colors">
-        <div className="flex-1 bg-[#F7F9FB] dark:bg-[#0F172A] rounded-2xl px-4 py-3 flex items-center gap-2 border border-slate-100 dark:border-slate-800 focus-within:border-[#4CB8A4] transition-colors">
+        <div className="flex-1 bg-[#EEF2F6] dark:bg-[#0F172A] rounded-2xl px-4 py-3 flex items-center gap-2 border border-slate-100 dark:border-slate-800 focus-within:border-[#4CB8A4] transition-colors">
           <input 
             type="text" 
             placeholder="Ask anything about your health..." 
