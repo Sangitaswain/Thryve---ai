@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Thryve Wellness",
+  "description": "A preventive healthcare and wellness app focused on long-term healthy habits with integrated AI coaching.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
