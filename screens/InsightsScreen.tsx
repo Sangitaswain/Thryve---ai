@@ -53,26 +53,24 @@ const InsightsScreen: React.FC = () => {
       showsVerticalScrollIndicator={false}
     >
       <Animated.View entering={FadeInUp.delay(100)} style={styles.header}>
-        <Text style={styles.title} className="text-slate-900 dark:text-white">Health Intelligence</Text>
-        <Text style={styles.subtitle} className="text-slate-500 dark:text-slate-400">Discover the science behind your vitals.</Text>
+        <Text style={styles.title}>Health Intelligence</Text>
+        <Text style={styles.subtitle}>Discover the science behind your vitals.</Text>
       </Animated.View>
 
       {/* Research Card */}
       <Animated.View 
         entering={FadeInUp.delay(200)}
-        style={styles.card} 
-        className="bg-white dark:bg-slate-800 border border-slate-50 dark:border-slate-700 shadow-xl"
+        style={styles.card}
       >
-        <View className="flex-row items-center mb-6">
+        <View>
           <BookOpen size={20} color="#4CB8A4" style={{ marginRight: 10 }} />
-          <Text className="font-bold text-slate-800 dark:text-white text-lg">Bio-Research Library</Text>
+          <Text>Bio-Research Library</Text>
         </View>
 
         <View style={styles.searchBar}>
-          <View style={styles.inputWrapper} className="bg-slate-50 dark:bg-slate-900">
+          <View style={styles.inputWrapper}>
             <TextInput 
               style={styles.input}
-              className="text-slate-800 dark:text-white"
               placeholder="Query physiological topics..."
               placeholderTextColor="#94A3B8"
               value={searchQuery}
@@ -86,14 +84,13 @@ const InsightsScreen: React.FC = () => {
             onPress={() => handleSearch()}
             disabled={isSearching}
             style={styles.searchButton}
-            className="bg-[#4CB8A4]"
           >
             {isSearching ? <ActivityIndicator size="small" color="white" /> : <Search color="white" size={20} />}
           </TouchableOpacity>
         </View>
 
         {!researchData && !isSearching && (
-          <View className="flex-row flex-wrap gap-2 mb-4">
+          <View>
             {suggestedTopics.map((topic, i) => (
               <TouchableOpacity 
                 key={topic}
@@ -101,30 +98,29 @@ const InsightsScreen: React.FC = () => {
                   setSearchQuery(topic);
                   handleSearch(topic);
                 }}
-                className="bg-slate-50 dark:bg-slate-900 px-3 py-2 rounded-xl border border-slate-100 dark:border-slate-800"
               >
-                <Text className="text-[10px] font-bold text-slate-500 dark:text-slate-400">#{topic}</Text>
+                <Text>#{topic}</Text>
               </TouchableOpacity>
             ))}
           </View>
         )}
 
         {isSearching ? (
-          <View className="py-12 items-center">
+          <View>
             <ActivityIndicator color="#4CB8A4" size="large" />
-            <Text className="text-[10px] text-slate-400 font-bold uppercase tracking-[4px] mt-6">Indexing Peer-Reviewed Data...</Text>
+            <Text>Indexing Peer-Reviewed Data...</Text>
           </View>
         ) : researchData ? (
           <Animated.View entering={FadeIn.duration(400)}>
-            <Text style={styles.researchText} className="text-slate-600 dark:text-slate-300">
+            <Text style={styles.researchText}>
               {researchData.text}
             </Text>
             
-            <View style={styles.divider} className="bg-slate-100 dark:bg-slate-700" />
+            <View style={styles.divider} />
             
-            <View className="flex-row items-center mb-4">
+            <View>
               <Info size={12} color="#94A3B8" style={{ marginRight: 6 }} />
-              <Text className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Grounding Citations</Text>
+              <Text>Grounding Citations</Text>
             </View>
 
             <View style={styles.sourcesContainer}>
@@ -139,11 +135,10 @@ const InsightsScreen: React.FC = () => {
                     key={i} 
                     onPress={() => Linking.openURL(uri).catch(err => console.error("Couldn't load page", err))}
                     style={styles.sourceLink}
-                    className="bg-slate-50 dark:bg-slate-900/50"
                   >
-                    <View className="flex-row items-center flex-1">
+                    <View>
                       {isMap ? <MapPin size={12} color="#4CB8A4" /> : <Globe size={12} color="#4CB8A4" />}
-                      <Text numberOfLines={1} style={styles.sourceText} className="ml-2">{title}</Text>
+                      <Text numberOfLines={1} style={styles.sourceText}>{title}</Text>
                     </View>
                     <ExternalLink size={12} color="#94A3B8" />
                   </TouchableOpacity>
@@ -152,8 +147,8 @@ const InsightsScreen: React.FC = () => {
             </View>
           </Animated.View>
         ) : (
-          <View style={styles.emptyState} className="bg-slate-50 dark:bg-slate-900/30">
-            <Text className="text-slate-400 text-[11px] italic text-center leading-5">
+          <View style={styles.emptyState}>
+            <Text>
               Enter a wellness topic to synthesize a multi-source research report. Thryve cross-references medical databases to provide the most current insights.
             </Text>
           </View>
@@ -163,16 +158,15 @@ const InsightsScreen: React.FC = () => {
       {/* Correlation Chart Card */}
       <Animated.View 
         entering={FadeInUp.delay(300)}
-        style={styles.card} 
-        className="bg-white dark:bg-slate-800 border border-slate-50 dark:border-slate-700 shadow-xl"
+        style={styles.card}
       >
-        <View className="flex-row justify-between items-start mb-8">
+        <View>
           <View>
-            <View className="flex-row items-center mb-1">
+            <View>
               <BarChart3 size={20} color="#6EC1E4" style={{ marginRight: 10 }} />
-              <Text className="font-bold text-slate-800 dark:text-white text-lg">Biometric Flow</Text>
+              <Text>Biometric Flow</Text>
             </View>
-            <Text className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Mood & Physical Activity Correlation</Text>
+            <Text>Mood & Physical Activity Correlation</Text>
           </View>
         </View>
 
@@ -191,12 +185,12 @@ const InsightsScreen: React.FC = () => {
         </View>
 
         <View style={styles.legend}>
-          <View className="flex-row items-center mr-4">
-            <View className="w-2 h-2 rounded-full bg-[#4CB8A4] mr-2" />
+          <View>
+            <View />
             <Text style={styles.legendText}>Mood</Text>
           </View>
-          <View className="flex-row items-center">
-            <View className="w-2 h-2 rounded-full bg-[#6EC1E4] mr-2" />
+          <View>
+            <View />
             <Text style={styles.legendText}>Activity</Text>
           </View>
         </View>
@@ -225,11 +219,11 @@ const BarGroup: React.FC<BarGroupProps> = ({ data, progress }) => {
   return (
     <View style={styles.barGroupWrapper}>
       <View style={styles.barPair}>
-        <View style={styles.barTrack} className="bg-slate-50 dark:bg-slate-900">
-          <Animated.View style={[styles.bar, moodStyle]} className="bg-[#4CB8A4]" />
+        <View style={styles.barTrack}>
+          <Animated.View style={[styles.bar, moodStyle]} />
         </View>
-        <View style={styles.barTrack} className="bg-slate-50 dark:bg-slate-900">
-          <Animated.View style={[styles.bar, activityStyle]} className="bg-[#6EC1E4]" />
+        <View style={styles.barTrack}>
+          <Animated.View style={[styles.bar, activityStyle]} />
         </View>
       </View>
       <Text style={styles.chartLabel}>{data.day}</Text>

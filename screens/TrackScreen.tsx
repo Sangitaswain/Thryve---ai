@@ -29,24 +29,24 @@ const TrackScreen: React.FC = () => {
 
   const handleMoodSelect = (idx: number) => {
     setSelectedMood(idx);
-    if (Haptics?.notificationAsync) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    if (Haptics?.notificationAsync) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
     moodScale.value = withSpring(1.2, { damping: 10 }, () => {
       moodScale.value = withSpring(1);
     });
   };
 
   const adjustWater = (amount: number) => {
-    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
     setWaterAmount(prev => Math.max(0, prev + amount));
   };
 
   const simulateMealUpload = async () => {
     setIsAnalyzingMeal(true);
-    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => {});
-    
+    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => { });
+
     // Simulating camera/Gemini analysis
     const result = await analyzeMealImage("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==");
-    
+
     setMealResult(result as MealAnalysis || {
       foodName: "Quinoa Harvest Bowl",
       protein: "18g",
@@ -56,69 +56,67 @@ const TrackScreen: React.FC = () => {
       summary: "Excellent choice! High in fiber and complete protein."
     });
     setIsAnalyzingMeal(false);
-    if (Haptics?.notificationAsync) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    if (Haptics?.notificationAsync) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
   };
 
   return (
-    <ScrollView 
-      style={styles.container} 
+    <ScrollView
+      style={styles.container}
       contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}
     >
       <Animated.View entering={FadeInUp.delay(100)} style={styles.header}>
-        <Text style={styles.title} className="text-slate-900 dark:text-white">Daily Log</Text>
-        <Text style={styles.subtitle} className="text-slate-500 dark:text-slate-400">Sync your biological markers.</Text>
+        <Text style={styles.title}>Daily Log</Text>
+        <Text style={styles.subtitle}>Sync your biological markers.</Text>
       </Animated.View>
 
       {/* Meal Tracker Module */}
-      <Animated.View 
+      <Animated.View
         entering={FadeInUp.delay(200)}
-        style={styles.card} 
-        className="bg-white dark:bg-slate-800 border border-slate-50 dark:border-slate-700 shadow-xl"
+        style={styles.card}
       >
-        <View className="flex-row justify-between items-center mb-6">
+        <View>
           <View>
-            <View className="flex-row items-center mb-1">
+            <View>
               <PieChart size={16} color="#4CB8A4" style={{ marginRight: 6 }} />
-              <Text className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nutrition Scan</Text>
+              <Text>Nutrition Scan</Text>
             </View>
-            <Text className="text-xl font-bold text-slate-900 dark:text-white">Track Your Meal</Text>
+            <Text>Track Your Meal</Text>
           </View>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={simulateMealUpload}
             style={styles.scanButton}
-            className="bg-[#4CB8A4]"
           >
             <Camera color="white" size={24} />
           </TouchableOpacity>
         </View>
 
         {isAnalyzingMeal ? (
-          <View className="items-center py-8">
+          <View>
             <ActivityIndicator color="#4CB8A4" size="large" />
-            <Text className="text-[10px] text-slate-400 mt-6 font-bold uppercase tracking-[4px]">Gemini Vision Analyzing...</Text>
+            <Text>Gemini Vision Analyzing...</Text>
           </View>
         ) : mealResult ? (
-          <View style={styles.resultBox} className="bg-slate-50 dark:bg-slate-900/50">
-            <View className="flex-row justify-between items-center mb-4">
-              <Text className="font-bold text-[#4CB8A4] text-lg">{mealResult.foodName}</Text>
-              <View className="bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1.5 rounded-xl flex-row items-center">
+          <View style={styles.resultBox}>
+            <View>
+              <Text>{mealResult.foodName}</Text>
+              <View>
                 <Sparkles size={12} color="#10B981" />
-                <Text className="text-emerald-700 dark:text-emerald-400 text-xs font-bold ml-1">{mealResult.healthRating}/10</Text>
+                <Text>{mealResult.healthRating}/10</Text>
               </View>
             </View>
-            <View className="flex-row justify-between mb-4">
+            <View>
               <LogMetric label="Protein" value={mealResult.protein} color="#4CB8A4" />
               <LogMetric label="Carbs" value={mealResult.carbs} color="#6EC1E4" />
               <LogMetric label="Fats" value={mealResult.fats} color="#94A3B8" />
             </View>
-            <Text className="text-[12px] text-slate-500 dark:text-slate-400 leading-5 italic">
+            <Text>
               "{mealResult.summary}"
             </Text>
           </View>
         ) : (
-          <View className="items-center py-4 bg-slate-50 dark:bg-slate-900/30 rounded-2xl">
-            <Text className="text-slate-400 text-[11px] font-medium text-center px-6">
+          <View>
+            <Text>
               Use Gemini Vision to identify macros and health scores from a simple photo.
             </Text>
           </View>
@@ -126,14 +124,14 @@ const TrackScreen: React.FC = () => {
       </Animated.View>
 
       {/* Mood Tracker Module */}
-      <Animated.View entering={FadeInUp.delay(300)} className="mb-8">
-        <View className="flex-row items-center mb-5 ml-2">
+      <Animated.View entering={FadeInUp.delay(300)}>
+        <View>
           <Smile size={18} color="#94A3B8" style={{ marginRight: 8 }} />
-          <Text className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Psychological State</Text>
+          <Text>Psychological State</Text>
         </View>
-        <View className="flex-row justify-between">
+        <View>
           {moods.map((m, idx) => (
-            <MoodButton 
+            <MoodButton
               key={idx}
               item={m}
               isSelected={selectedMood === idx}
@@ -144,94 +142,88 @@ const TrackScreen: React.FC = () => {
       </Animated.View>
 
       {/* Sleep Tracker Module */}
-      <Animated.View 
+      <Animated.View
         entering={FadeInUp.delay(400)}
-        style={styles.card} 
-        className="bg-white dark:bg-slate-800 border border-slate-50 dark:border-slate-700 shadow-xl"
+        style={styles.card}
       >
-        <View className="flex-row justify-between items-center mb-6">
-          <View className="flex-row items-center">
-            <View className="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 rounded-xl items-center justify-center mr-3">
+        <View>
+          <View>
+            <View>
               <Moon size={18} color="#6EC1E4" />
             </View>
             <View>
-              <Text className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Restorative Sleep</Text>
-              <Text className="text-lg font-bold text-slate-900 dark:text-white">Duration</Text>
+              <Text>Restorative Sleep</Text>
+              <Text>Duration</Text>
             </View>
           </View>
-          <Text className="text-[#6EC1E4] font-bold text-2xl">{sleepHours}<Text className="text-sm font-medium">h</Text></Text>
+          <Text>{sleepHours}<Text>h</Text></Text>
         </View>
-        
+
         <View style={styles.stepperContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => {
               if (sleepHours > 0) {
                 setSleepHours(prev => prev - 0.5);
-                if (Haptics?.selectionAsync) Haptics.selectionAsync().catch(() => {});
+                if (Haptics?.selectionAsync) Haptics.selectionAsync().catch(() => { });
               }
-            }} 
-            style={styles.stepBtn} 
-            className="bg-slate-50 dark:bg-slate-900"
+            }}
+            style={styles.stepBtn}
           >
-             <Minus color="#94A3B8" size={20} />
+            <Minus color="#94A3B8" size={20} />
           </TouchableOpacity>
-          <View style={styles.progressTrack} className="bg-slate-100 dark:bg-slate-900">
-            <View style={{ width: `${(sleepHours / 12) * 100}%` }} className="h-full bg-[#6EC1E4] rounded-full" />
+          <View style={styles.progressTrack}>
+            <View style={{ width: `${(sleepHours / 12) * 100}%` }} />
           </View>
-          <TouchableOpacity 
-             onPress={() => {
+          <TouchableOpacity
+            onPress={() => {
               if (sleepHours < 12) {
                 setSleepHours(prev => prev + 0.5);
-                if (Haptics?.selectionAsync) Haptics.selectionAsync().catch(() => {});
+                if (Haptics?.selectionAsync) Haptics.selectionAsync().catch(() => { });
               }
-            }} 
-            style={styles.stepBtn} 
-            className="bg-slate-50 dark:bg-slate-900"
+            }}
+            style={styles.stepBtn}
           >
-             <Plus color="#6EC1E4" size={20} />
+            <Plus color="#6EC1E4" size={20} />
           </TouchableOpacity>
         </View>
       </Animated.View>
 
       {/* Hydration Tracker Module */}
-      <Animated.View 
+      <Animated.View
         entering={FadeInUp.delay(500)}
-        style={styles.card} 
-        className="bg-white dark:bg-slate-800 border border-slate-50 dark:border-slate-700 shadow-xl"
+        style={styles.card}
       >
-        <View className="flex-row justify-between items-center mb-6">
-          <View className="flex-row items-center">
-            <View className="w-10 h-10 bg-teal-50 dark:bg-teal-900/30 rounded-xl items-center justify-center mr-3">
+        <View>
+          <View>
+            <View>
               <Droplets size={18} color="#4CB8A4" />
             </View>
             <View>
-              <Text className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cellular Hydration</Text>
-              <Text className="text-lg font-bold text-slate-900 dark:text-white">Water Intake</Text>
+              <Text>Cellular Hydration</Text>
+              <Text>Water Intake</Text>
             </View>
           </View>
-          <Text className="text-[#4CB8A4] font-bold text-2xl">{(waterAmount / 1000).toFixed(1)}<Text className="text-sm font-medium">L</Text></Text>
+          <Text>{(waterAmount / 1000).toFixed(1)}<Text>L</Text></Text>
         </View>
-        
-        <View className="flex-row justify-between gap-4">
-          <TouchableOpacity 
+
+        <View>
+          <TouchableOpacity
             onPress={() => adjustWater(250)}
-            className="flex-1 bg-teal-50 dark:bg-teal-900/10 h-14 rounded-2xl items-center justify-center flex-row"
           >
             <Plus size={14} color="#4CB8A4" style={{ marginRight: 6 }} />
-            <Text className="text-[#4CB8A4] font-bold text-xs uppercase tracking-widest">Small (250ml)</Text>
+            <Text>Small (250ml)</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => adjustWater(500)}
-            className="flex-1 bg-[#4CB8A4] h-14 rounded-2xl items-center justify-center flex-row"
           >
             <Plus size={14} color="white" style={{ marginRight: 6 }} />
-            <Text className="text-white font-bold text-xs uppercase tracking-widest">Large (500ml)</Text>
+            <Text>Large (500ml)</Text>
           </TouchableOpacity>
         </View>
       </Animated.View>
 
       <FlipDiceChallenge />
-      
+
       <View style={{ height: 120 }} />
     </ScrollView>
   );
@@ -239,7 +231,7 @@ const TrackScreen: React.FC = () => {
 
 const LogMetric = ({ label, value, color }: { label: string, value: string, color: string }) => (
   <View style={styles.metricItem}>
-    <Text className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">{label}</Text>
+    <Text>{label}</Text>
     <Text style={{ color, fontSize: 16, fontWeight: 'bold' }}>{value}</Text>
   </View>
 );
@@ -263,13 +255,9 @@ const MoodButton: React.FC<MoodButtonProps> = ({ item, isSelected, onPress }) =>
       style={{ width: (width - 64) / 5 }}
     >
       <Animated.View
-        className={`items-center p-4 rounded-3xl border-2 ${
-          isSelected ? item.activeColor : 'border-transparent bg-white dark:bg-slate-800 shadow-sm'
-        }`}
-        style={animatedStyle}
-      >
+        style={[animatedStyle, { padding: 16, borderRadius: 25, borderWidth: 2, borderColor: isSelected ? 'transparent' : '#E2E8F0', alignItems: 'center' }]}>
         <Text style={{ fontSize: 26 }}>{item.emoji}</Text>
-        <Text className={`text-[8px] font-bold uppercase mt-2 tracking-widest text-center ${isSelected ? '' : 'text-slate-400'}`}>
+        <Text style={{ fontSize: 8, fontWeight: 'bold', textTransform: 'uppercase', marginTop: 8, letterSpacing: 2, textAlign: 'center', color: isSelected ? '#000' : '#94A3B8' }}>
           {item.label}
         </Text>
       </Animated.View>

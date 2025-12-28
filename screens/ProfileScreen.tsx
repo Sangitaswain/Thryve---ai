@@ -54,7 +54,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ isDarkMode, toggleTheme }
       {/* Avatar Section */}
       <View style={styles.avatarSection}>
         <Animated.View entering={ZoomIn.duration(600)} style={styles.avatarWrapper}>
-          <View style={styles.avatarContainer} className="bg-white dark:bg-slate-800 border-white dark:border-slate-800 shadow-xl">
+          <View style={styles.avatarContainer}>
             <Image 
               source={{ uri: 'https://api.dicebear.com/7.x/avataaars/png?seed=Alex&backgroundColor=b6e3f4' }} 
               style={styles.avatar}
@@ -62,8 +62,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ isDarkMode, toggleTheme }
             />
           </View>
           <TouchableOpacity 
-            style={styles.cameraButton} 
-            className="bg-[#4CB8A4] border-[#EEF2F6] dark:border-[#0F172A] shadow-lg"
+            style={styles.cameraButton}
             activeOpacity={0.8}
             onPress={() => handleLinkPress('Camera')}
           >
@@ -71,50 +70,49 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ isDarkMode, toggleTheme }
           </TouchableOpacity>
         </Animated.View>
         
-        <Animated.View entering={FadeInUp.delay(200)} className="items-center">
-          <View className="flex-row items-center gap-2">
-            <Text style={styles.userName} className="text-slate-900 dark:text-white">Alex Thompson</Text>
-            <View className="bg-amber-100 dark:bg-amber-900/30 px-2 py-0.5 rounded-full flex-row items-center">
+        <Animated.View entering={FadeInUp.delay(200)}>
+          <View>
+            <Text style={styles.userName}>Alex Thompson</Text>
+            <View>
               <Award size={10} color="#D97706" />
-              <Text className="text-[8px] font-bold text-amber-700 dark:text-amber-500 ml-1 uppercase">Pro</Text>
+              <Text>Pro</Text>
             </View>
           </View>
-          <Text style={styles.userRole} className="text-slate-500 dark:text-slate-400">Wellness Enthusiast</Text>
+          <Text style={styles.userRole}>Wellness Enthusiast</Text>
         </Animated.View>
       </View>
 
       {/* Stats Row */}
       <Animated.View 
         entering={FadeInUp.delay(300)} 
-        style={styles.statsRow} 
-        className="bg-white dark:bg-slate-800 border border-slate-50 dark:border-slate-700 shadow-sm"
+        style={styles.statsRow}
       >
         <View style={styles.statItem}>
-          <View className="flex-row items-center mb-1">
+          <View>
             <Flame size={16} color="#4CB8A4" fill="#4CB8A4" />
             <Text style={[styles.statValue, { color: '#4CB8A4', marginLeft: 4 }]}>14</Text>
           </View>
           <Text style={styles.statLabel}>Day Streak</Text>
         </View>
-        <View style={styles.statDivider} className="bg-slate-100 dark:bg-slate-700" />
+        <View style={styles.statDivider} />
         <StatItem label="Active Mins" value="42" color="#6EC1E4" />
-        <View style={styles.statDivider} className="bg-slate-100 dark:bg-slate-700" />
+        <View style={styles.statDivider} />
         <StatItem label="Goal Score" value="89%" color="#4CB8A4" />
       </Animated.View>
 
       {/* Settings Sections */}
       <Animated.View entering={FadeInUp.delay(400)}>
-        <Text style={styles.sectionTitle} className="text-slate-900 dark:text-white">Preferences</Text>
-        <View style={styles.settingsMenu} className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+        <Text style={styles.sectionTitle}>Preferences</Text>
+        <View style={styles.settingsMenu}>
           
-          <View style={styles.menuItem} className="border-b border-slate-50 dark:border-slate-700">
+          <View style={styles.menuItem}>
             <View style={styles.menuInfo}>
-              <View style={styles.menuIconBox} className="bg-slate-50 dark:bg-slate-900">
+              <View style={styles.menuIconBox}>
                 {isDarkMode ? <Moon size={18} color="#4CB8A4" /> : <Sun size={18} color="#4CB8A4" />}
               </View>
               <View>
-                <Text style={styles.menuLabel} className="text-slate-800 dark:text-white">Appearance</Text>
-                <Text style={styles.menuSublabel} className="text-slate-400 uppercase tracking-widest">{isDarkMode ? 'Dark Protocol' : 'Standard View'}</Text>
+                <Text style={styles.menuLabel}>Appearance</Text>
+                <Text style={styles.menuSublabel}>{isDarkMode ? 'Dark Protocol' : 'Standard View'}</Text>
               </View>
             </View>
             <Switch 
@@ -146,15 +144,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ isDarkMode, toggleTheme }
       <Animated.View entering={FadeInUp.delay(500)}>
         <TouchableOpacity 
           onPress={() => handleLinkPress('Sign Out')}
-          style={styles.signOutButton} 
-          className="bg-red-50 dark:bg-red-900/10"
+          style={styles.signOutButton}
           activeOpacity={0.6}
         >
           <LogOut color="#EF4444" size={18} style={{ marginRight: 10 }} />
           <Text style={styles.signOutText}>Secure Logout</Text>
         </TouchableOpacity>
         
-        <Text className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-6">
+        <Text>
           Version 2.5.0 • Powered by Gemini Live
         </Text>
       </Animated.View>
@@ -175,16 +172,15 @@ const SettingsLink = ({ icon: Icon, label, sublabel, isLast, onPress }: { icon: 
   <TouchableOpacity 
     onPress={onPress}
     activeOpacity={0.7}
-    style={[styles.menuItem, isLast && { borderBottomWidth: 0 }]} 
-    className="border-b border-slate-50 dark:border-slate-700"
+    style={[styles.menuItem, isLast && { borderBottomWidth: 0 }]}
   >
     <View style={styles.menuInfo}>
-      <View style={styles.menuIconBox} className="bg-slate-50 dark:bg-slate-900">
+      <View style={styles.menuIconBox}>
         <Icon size={18} color="#4CB8A4" />
       </View>
       <View>
-        <Text style={styles.menuLabel} className="text-slate-800 dark:text-white">{label}</Text>
-        <Text style={styles.menuSublabel} className="text-slate-400 uppercase tracking-widest">{sublabel}</Text>
+        <Text style={styles.menuLabel}>{label}</Text>
+        <Text style={styles.menuSublabel}>{sublabel}</Text>
       </View>
     </View>
     <ChevronRight size={16} color="#CBD5E1" />

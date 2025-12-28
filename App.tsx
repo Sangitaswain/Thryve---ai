@@ -16,12 +16,12 @@ const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleTheme = () => {
-    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
     setIsDarkMode(!isDarkMode);
   };
 
   const handleTabChange = (tab: TabType) => {
-    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => { });
     setActiveTab(tab);
   };
 
@@ -39,7 +39,7 @@ const App: React.FC = () => {
   const bgColor = isDarkMode ? '#0F172A' : '#EEF2F6';
 
   return (
-    <View style={[styles.container, { backgroundColor: bgColor }]} className={isDarkMode ? 'dark' : ''}>
+    <View style={[styles.container, { backgroundColor: bgColor }]}>
       <SafeAreaView style={styles.safeArea}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
         <View style={styles.content}>
@@ -47,39 +47,37 @@ const App: React.FC = () => {
         </View>
 
         {activeTab !== 'chat' && (
-          <View style={styles.tabBar} className="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 shadow-lg">
-            <TabButton 
-              isActive={activeTab === 'home'} 
-              onClick={() => handleTabChange('home')} 
-              label="Home" 
-              Icon={Home} 
+          <View style={[styles.tabBar, { backgroundColor: isDarkMode ? '#0F172A' : '#FFFFFF', borderTopColor: isDarkMode ? '#1E293B' : '#F1F5F9' }]}>
+            <TabButton
+              isActive={activeTab === 'home'}
+              onClick={() => handleTabChange('home')}
+              label="Home"
+              Icon={Home}
             />
-            <TabButton 
-              isActive={activeTab === 'track'} 
-              onClick={() => handleTabChange('track')} 
-              label="Log" 
-              Icon={PlusSquare} 
+            <TabButton
+              isActive={activeTab === 'track'}
+              onClick={() => handleTabChange('track')}
+              label="Log"
+              Icon={PlusSquare}
             />
-            
-            <TouchableOpacity 
+
+            <TouchableOpacity
               onPress={() => handleTabChange('chat')}
-              style={styles.chatFab}
-              className="bg-[#4CB8A4] shadow-xl"
-            >
+              style={[styles.chatFab, { backgroundColor: '#4CB8A4' }]}>
               <MessageCircle color="white" size={28} />
             </TouchableOpacity>
 
-            <TabButton 
-              isActive={activeTab === 'insights'} 
-              onClick={() => handleTabChange('insights')} 
-              label="Stats" 
-              Icon={BarChart2} 
+            <TabButton
+              isActive={activeTab === 'insights'}
+              onClick={() => handleTabChange('insights')}
+              label="Stats"
+              Icon={BarChart2}
             />
-            <TabButton 
-              isActive={activeTab === 'profile'} 
-              onClick={() => handleTabChange('profile')} 
-              label="Profile" 
-              Icon={User} 
+            <TabButton
+              isActive={activeTab === 'profile'}
+              onClick={() => handleTabChange('profile')}
+              label="Profile"
+              Icon={User}
             />
           </View>
         )}
@@ -90,12 +88,12 @@ const App: React.FC = () => {
 
 const TabButton: React.FC<{ isActive: boolean, onClick: () => void, label: string, Icon: any }> = ({ isActive, onClick, label, Icon }) => (
   <TouchableOpacity onPress={onClick} style={styles.tabButton}>
-    <Icon 
-      size={22} 
-      color={isActive ? '#4CB8A4' : '#94A3B8'} 
+    <Icon
+      size={22}
+      color={isActive ? '#4CB8A4' : '#94A3B8'}
       strokeWidth={isActive ? 2.5 : 2}
     />
-    <Text className={`text-[10px] font-bold mt-1 ${isActive ? 'text-[#4CB8A4]' : 'text-slate-400'}`}>
+    <Text style={[styles.tabLabel, { color: isActive ? '#4CB8A4' : '#94A3B8' }]}>
       {label}
     </Text>
   </TouchableOpacity>
@@ -123,13 +121,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
+    borderTopWidth: 1,
     height: 85,
     elevation: 20, // Critical for Android shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   tabButton: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 10,
+  },
+  tabLabel: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    marginTop: 4,
   },
   chatFab: {
     width: 64,
@@ -139,6 +147,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: -45,
     elevation: 8,
+    shadowColor: '#4CB8A4',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   }
 });
 

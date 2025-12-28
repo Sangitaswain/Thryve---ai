@@ -26,7 +26,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [showVoiceSession, setShowVoiceSession] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
-  
+
   // Persistent chat session to maintain history
   const chatSessionRef = useRef<any>(null);
 
@@ -49,8 +49,8 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
     const currentInput = input;
     setInput('');
     setIsStreaming(true);
-    
-    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+
+    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => { });
 
     try {
       const assistantMessageId = (Date.now() + 1).toString();
@@ -71,15 +71,15 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
         if (textChunk) {
           fullText += textChunk;
           // Update the specific message in state
-          setMessages(prev => prev.map(msg => 
-            msg.id === assistantMessageId 
-              ? { ...msg, content: fullText, isThinking: false } 
+          setMessages(prev => prev.map(msg =>
+            msg.id === assistantMessageId
+              ? { ...msg, content: fullText, isThinking: false }
               : msg
           ));
         }
       }
-      
-      if (Haptics?.notificationAsync) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+
+      if (Haptics?.notificationAsync) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
     } catch (error) {
       console.error("Streaming error:", error);
       setMessages(prev => [...prev, {
@@ -94,16 +94,16 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
   };
 
   const handleCameraScan = async () => {
-    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => {});
-    
+    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => { });
+
     // Simulate meal analysis flow
     setIsStreaming(true);
     const mockImage = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
-    
+
     try {
       const analysis: MealAnalysis = await analyzeMealImage(mockImage);
       const foodContext = `I just ate ${analysis.foodName}. It has ${analysis.protein} protein, ${analysis.carbs} carbs, and ${analysis.fats} fats. Health rating: ${analysis.healthRating}/10. Summary: ${analysis.summary}`;
-      
+
       // Add the user "scan" as a message
       setMessages(prev => [...prev, {
         id: Date.now().toString(),
@@ -124,13 +124,13 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
   };
 
   const startVoiceSession = () => {
-    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => {});
+    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => { });
     setShowVoiceSession(true);
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.container}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
@@ -139,29 +139,28 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
           <VoiceCoachOverlay onClose={() => setShowVoiceSession(false)} />
         </Modal>
 
-        <View style={styles.header} className="bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700">
+        <View style={styles.header}>
           <View style={styles.headerLeft}>
             <TouchableOpacity onPress={onBack} style={styles.backButton}>
               <ChevronLeft color={isDarkMode ? 'white' : '#1E293B'} size={24} />
             </TouchableOpacity>
             <View>
-              <Text style={styles.headerTitle} className="text-slate-900 dark:text-white">Coach Thryve</Text>
-              <View className="flex-row items-center gap-1">
-                <View style={styles.statusDot} className="bg-emerald-500" />
+              <Text style={styles.headerTitle}>Coach Thryve</Text>
+              <View>
+                <View style={styles.statusDot} />
                 <Text style={styles.statusLabel}>Live Intelligence</Text>
               </View>
             </View>
           </View>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={startVoiceSession}
             style={styles.voiceFab}
-            className="bg-teal-50 dark:bg-slate-900 border border-[#4CB8A4]/20"
           >
             <Mic color="#4CB8A4" size={20} />
           </TouchableOpacity>
         </View>
 
-        <ScrollView 
+        <ScrollView
           ref={scrollViewRef}
           style={styles.chatArea}
           contentContainerStyle={styles.chatContent}
@@ -169,23 +168,21 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
           showsVerticalScrollIndicator={false}
         >
           {messages.map((msg) => (
-            <Animated.View 
+            <Animated.View
               entering={FadeIn.duration(300)}
-              key={msg.id} 
+              key={msg.id}
               style={[styles.messageRow, msg.role === 'user' ? styles.messageRowUser : styles.messageRowAssistant]}
             >
-              <View 
-                style={[styles.messageBubble, msg.role === 'user' ? styles.bubbleUser : styles.bubbleAssistant]}
-                className={msg.role === 'user' ? 'bg-[#4CB8A4]' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700'}
-              >
+              <View
+                style={[styles.messageBubble, msg.role === 'user' ? [styles.bubbleUser, { backgroundColor: '#4CB8A4' }] : [styles.bubbleAssistant, { backgroundColor: '#FFFFFF', borderColor: '#F1F5F9' }]]}>
                 {msg.isThinking ? (
-                  <View className="flex-row items-center space-x-2 py-1">
+                  <View>
                     <ActivityIndicator size="small" color="#4CB8A4" />
-                    <Text className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Processing...</Text>
+                    <Text>Processing...</Text>
                   </View>
                 ) : (
                   <>
-                    <Text style={[styles.messageText, msg.role === 'user' ? styles.textUser : styles.textAssistant]} className={msg.role !== 'user' ? 'text-slate-800 dark:text-slate-200' : ''}>
+                    <Text style={[styles.messageText, msg.role === 'user' ? styles.textUser : styles.textAssistant]}>
                       {msg.content}
                     </Text>
                     <Text style={[styles.timestamp, msg.role === 'user' ? styles.timeUser : styles.timeAssistant]}>
@@ -198,21 +195,19 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
           ))}
         </ScrollView>
 
-        <View style={styles.inputArea} className="bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
-          <TouchableOpacity 
+        <View style={styles.inputArea}>
+          <TouchableOpacity
             onPress={handleCameraScan}
             style={styles.actionButton}
-            className="bg-slate-50 dark:bg-slate-900"
           >
             <Camera color="#94A3B8" size={22} />
           </TouchableOpacity>
 
-          <View style={styles.inputWrapper} className="bg-slate-50 dark:bg-slate-900">
+          <View style={styles.inputWrapper}>
             {/* Fix: moved maxHeight from prop to style object to fix TypeScript error */}
-            <TextInput 
+            <TextInput
               style={[styles.textInput, { maxHeight: 100 }]}
-              className="text-slate-800 dark:text-white"
-              placeholder="Ask Coach Thryve..." 
+              placeholder="Ask Coach Thryve..."
               placeholderTextColor="#94A3B8"
               value={input}
               onChangeText={setInput}
@@ -220,11 +215,10 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
             />
           </View>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={handleSend}
             disabled={isStreaming || !input.trim()}
             style={styles.sendButton}
-            className="bg-[#4CB8A4] shadow-teal-500/20 disabled:opacity-30"
           >
             {isStreaming ? (
               <ActivityIndicator color="white" size="small" />
@@ -234,7 +228,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, isDarkMode }) => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 };
 

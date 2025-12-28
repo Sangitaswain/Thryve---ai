@@ -1,47 +1,5 @@
 
-// Add global type augmentation for React Native components to support NativeWind's className prop
 import 'react-native';
-import { 
-  ViewProps, 
-  TextProps, 
-  TouchableOpacityProps, 
-  PressableProps, 
-  ScrollViewProps, 
-  TextInputProps, 
-  ImageProps, 
-  KeyboardAvoidingViewProps, 
-  SafeAreaViewProps 
-} from 'react-native';
-
-declare module 'react-native' {
-  interface ViewProps {
-    className?: string;
-  }
-  interface TextProps {
-    className?: string;
-  }
-  interface TouchableOpacityProps {
-    className?: string;
-  }
-  interface PressableProps {
-    className?: string;
-  }
-  interface ScrollViewProps {
-    className?: string;
-  }
-  interface TextInputProps {
-    className?: string;
-  }
-  interface ImageProps {
-    className?: string;
-  }
-  interface KeyboardAvoidingViewProps {
-    className?: string;
-  }
-  interface SafeAreaViewProps {
-    className?: string;
-  }
-}
 
 /**
  * Navigation & UI Types
@@ -51,9 +9,9 @@ export type TabType = 'home' | 'track' | 'insights' | 'profile' | 'chat';
 /**
  * AI & Chat Types
  */
-export type GeminiModel = 
-  | 'gemini-3-flash-preview' 
-  | 'gemini-3-pro-preview' 
+export type GeminiModel =
+  | 'gemini-3-flash-preview'
+  | 'gemini-3-pro-preview'
   | 'gemini-2.5-flash-native-audio-preview-09-2025';
 
 export interface Message {

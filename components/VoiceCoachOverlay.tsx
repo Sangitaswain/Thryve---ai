@@ -235,7 +235,7 @@ const VoiceCoachOverlay: React.FC<VoiceCoachOverlayProps> = ({ onClose }) => {
             <X size={20} color="#94A3B8" />
           </TouchableOpacity>
           <Text style={styles.label}>AI Preventive Coach</Text>
-          <Text style={styles.title} className="text-slate-900 dark:text-white">
+          <Text style={styles.title}>
             {status === 'connecting' ? 'Calibrating...' : 
              status === 'listening' ? 'Listening' : 
              status === 'speaking' ? 'Coach Speaking' :
@@ -245,8 +245,8 @@ const VoiceCoachOverlay: React.FC<VoiceCoachOverlayProps> = ({ onClose }) => {
 
         <View style={styles.visualizer}>
           {status === 'unsupported' ? (
-            <View className="items-center px-12">
-              <AlertCircle size={44} color="#EF4444" className="mb-6" />
+            <View>
+              <AlertCircle size={44} color="#EF4444" />
               <Text style={styles.errorText}>
                 Live PCM Audio requires a native hardware bridge. Please test in a compatible environment.
               </Text>
@@ -261,7 +261,7 @@ const VoiceCoachOverlay: React.FC<VoiceCoachOverlayProps> = ({ onClose }) => {
           )}
         </View>
 
-        <View style={styles.chatWindow} className="bg-white/40 dark:bg-slate-800/40 border border-white/20">
+        <View style={styles.chatWindow}>
           <ScrollView 
             ref={scrollRef}
             showsVerticalScrollIndicator={false}
@@ -274,8 +274,8 @@ const VoiceCoachOverlay: React.FC<VoiceCoachOverlayProps> = ({ onClose }) => {
               </Text>
             ) : (
               transcription.map((line, idx) => (
-                <View key={idx} style={styles.bubble} className="bg-white dark:bg-slate-700">
-                  <Text style={styles.bubbleText} className="text-slate-800 dark:text-slate-100">
+                <View key={idx} style={styles.bubble}>
+                  <Text style={styles.bubbleText}>
                     {line}
                   </Text>
                 </View>
@@ -286,10 +286,9 @@ const VoiceCoachOverlay: React.FC<VoiceCoachOverlayProps> = ({ onClose }) => {
 
         <TouchableOpacity 
           onPress={handleEnd} 
-          style={styles.endButton} 
-          className="bg-slate-900 dark:bg-white shadow-xl"
+          style={styles.endButton}
         >
-          <Text style={styles.endButtonText} className="text-white dark:text-slate-900">Finish Chat</Text>
+          <Text style={styles.endButtonText}>Finish Chat</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

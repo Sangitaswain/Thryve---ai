@@ -115,20 +115,20 @@ const FlipDiceChallenge: React.FC = () => {
   }));
 
   return (
-    <View style={styles.card} className="bg-white dark:bg-slate-800 border border-slate-50 dark:border-slate-700 shadow-sm">
-      <View className="mb-8 items-center">
-        <Text className="text-slate-400 text-[9px] font-bold uppercase tracking-widest mb-1">Stuck? Try a</Text>
-        <Text className="text-slate-800 dark:text-white font-bold text-2xl">Habit Roll</Text>
+    <View style={styles.card}>
+      <View>
+        <Text>Stuck? Try a</Text>
+        <Text>Habit Roll</Text>
       </View>
       
       <TouchableOpacity onPress={rollDice} activeOpacity={0.9} style={styles.diceWrapper}>
         <Animated.View style={[styles.dice, animatedStyle]}>
-          <View style={styles.face} className="bg-[#4CB8A4] shadow-2xl">
+          <View style={styles.face}>
             <View style={styles.dotsGrid}>
               {[...Array(9)].map((_, i) => (
                 <View key={i} style={styles.dotContainer}>
                   {diceDots[dotsIndex].includes(i) && (
-                    <View style={styles.dot} className="bg-white" />
+                    <View style={styles.dot} />
                   )}
                 </View>
               ))}
@@ -139,22 +139,22 @@ const FlipDiceChallenge: React.FC = () => {
 
       <View style={styles.challengeContainer}>
         {isRolling ? (
-          <View className="items-center">
-            <Text className="text-[#4CB8A4] font-bold text-[10px] uppercase tracking-[4px]">Shaking...</Text>
+          <View>
+            <Text>Shaking...</Text>
           </View>
         ) : currentChallenge ? (
           // Use FadeIn layout animation instead of withDelay(..., withTiming) to fix Type 'number' is not assignable to type 'EntryOrExitLayoutType'
-          <Animated.View entering={FadeIn.delay(200)} className="items-center">
-            <Text className="text-center text-slate-800 dark:text-white font-bold text-lg mb-6 px-4">
+          <Animated.View entering={FadeIn.delay(200)}>
+            <Text>
               {currentChallenge}
             </Text>
-            <TouchableOpacity onPress={rollDice} style={styles.button} className="bg-[#4CB8A4]">
-              <Text className="text-white font-bold text-[10px] uppercase tracking-widest">Roll Again</Text>
+            <TouchableOpacity onPress={rollDice} style={styles.button}>
+              <Text>Roll Again</Text>
             </TouchableOpacity>
           </Animated.View>
         ) : (
-          <TouchableOpacity onPress={rollDice} style={styles.buttonLarge} className="bg-[#4CB8A4]">
-            <Text className="text-white font-bold text-xs uppercase tracking-widest">Tap to Gamble on a Habit</Text>
+          <TouchableOpacity onPress={rollDice} style={styles.buttonLarge}>
+            <Text>Tap to Gamble on a Habit</Text>
           </TouchableOpacity>
         )}
       </View>

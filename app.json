@@ -1,0 +1,30 @@
+{
+    "expo": {
+        "name": "Thryve Wellness",
+        "slug": "thryve-wellness",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "userInterfaceStyle": "automatic",
+        "splash": {
+            "resizeMode": "contain",
+            "backgroundColor": "#4CB8A4"
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.thryve.wellness"
+        },
+        "android": {
+            "adaptiveIcon": {
+                "backgroundColor": "#4CB8A4"
+            },
+            "package": "com.thryve.wellness"
+        },
+        "extra": {
+            "apiKey": ""
+        },
+        "plugins": []
+    }
+}

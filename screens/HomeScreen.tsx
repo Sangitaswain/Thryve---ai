@@ -5,11 +5,11 @@ import { MetricCard, Habit } from '../types';
 import * as Haptics from 'expo-haptics';
 import { generateDailyStrategy } from '../services/geminiService';
 import { Sparkles, CheckCircle2, Circle, ChevronRight, Zap, TrendingUp, TrendingDown } from 'lucide-react-native';
-import Animated, { 
-  FadeInUp, 
-  Layout, 
-  useAnimatedStyle, 
-  useSharedValue, 
+import Animated, {
+  FadeInUp,
+  Layout,
+  useAnimatedStyle,
+  useSharedValue,
   withSpring,
   withDelay,
   FadeIn
@@ -40,11 +40,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
   const [habits, setHabits] = useState<Habit[]>(INITIAL_HABITS);
   const [aiInsight, setAiInsight] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  
+
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
   const completedCount = habits.filter(h => h.completed).length;
   const progressPercent = Math.round((completedCount / habits.length) * 100);
-  
+
   const progressShared = useSharedValue(0);
 
   useEffect(() => {
@@ -55,9 +55,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
     const habit = habits.find(h => h.id === id);
     if (Haptics?.impactAsync) {
       if (!habit?.completed) {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
       } else {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
       }
     }
     setHabits(prev => prev.map(h => h.id === id ? { ...h, completed: !h.completed } : h));
@@ -66,7 +66,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
     if (Haptics?.notificationAsync) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
     }
     const result = await generateDailyStrategy({ metrics: wellnessMetrics, habits });
     setAiInsight(result);
@@ -78,124 +78,119 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
   }));
 
   return (
-    <ScrollView 
-      style={styles.scrollContainer} 
-      contentContainerStyle={styles.scrollContent} 
+    <ScrollView
+      style={styles.scrollContainer}
+      contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}
     >
       {/* Header */}
-      <Animated.View entering={FadeInUp.delay(100)} className="flex-row justify-between items-start mb-8">
+      <Animated.View entering={FadeInUp.delay(100)}>
         <View>
-          <Text className="text-[#4CB8A4] text-[10px] font-bold uppercase tracking-[3px] mb-1">{today}</Text>
-          <Text className="text-3xl font-bold text-slate-900 dark:text-white leading-tight">Good Morning,{'\n'}Alex</Text>
+          <Text>{today}</Text>
+          <Text>Good Morning,{'\n'}Alex</Text>
         </View>
-        <TouchableOpacity 
-          onPress={toggleTheme} 
+        <TouchableOpacity
+          onPress={toggleTheme}
           style={styles.themeToggle}
-          className="bg-white dark:bg-slate-800 shadow-sm"
         >
           <Text style={{ fontSize: 20 }}>{isDarkMode ? '☀️' : '🌙'}</Text>
         </TouchableOpacity>
       </Animated.View>
 
       {/* Progress Card */}
-      <Animated.View entering={FadeInUp.delay(200)} className="bg-[#4CB8A4] rounded-[40px] p-8 mb-8 shadow-2xl overflow-hidden">
-        <View className="flex-row items-center justify-between mb-6">
-          <View className="flex-1 pr-4">
-            <View className="bg-white/20 self-start px-3 py-1 rounded-full mb-3">
-              <Text className="text-white text-[8px] font-bold uppercase tracking-wider">Consistency Tracker</Text>
+      <Animated.View entering={FadeInUp.delay(200)}>
+        <View>
+          <View>
+            <View>
+              <Text>Consistency Tracker</Text>
             </View>
-            <Text className="text-2xl font-bold text-white mb-1">Thryve Protocol</Text>
-            <Text className="text-white/80 text-xs font-medium">
+            <Text>Thryve Protocol</Text>
+            <Text>
               {completedCount} of {habits.length} habits locked in.
             </Text>
           </View>
-          <View style={styles.progressCircle} className="bg-white/10">
-            <Text className="text-white font-bold text-xl">{progressPercent}%</Text>
+          <View style={styles.progressCircle}>
+            <Text>{progressPercent}%</Text>
           </View>
         </View>
-        
-        <View className="h-2 bg-black/10 rounded-full overflow-hidden">
-          <Animated.View style={[styles.progressLine, progressStyle]} className="bg-white" />
+
+        <View>
+          <Animated.View style={[styles.progressLine, progressStyle]} />
         </View>
       </Animated.View>
 
       {/* AI Strategy Section */}
-      <Animated.View 
+      <Animated.View
         entering={FadeInUp.delay(300)}
-        layout={Layout.springify()} 
-        className="bg-white dark:bg-slate-800 rounded-[35px] p-7 mb-8 border border-slate-50 dark:border-slate-700 shadow-xl"
+        layout={Layout.springify()}
       >
-        <View className="flex-row items-center justify-between mb-5">
-          <View className="flex-row items-center">
-            <View className="w-10 h-10 bg-teal-50 dark:bg-teal-900/30 rounded-xl items-center justify-center mr-3">
+        <View>
+          <View>
+            <View>
               <Sparkles size={20} color="#4CB8A4" />
             </View>
             <View>
-              <Text className="font-bold text-slate-900 dark:text-white">Daily Optimization</Text>
-              <Text className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Powered by Gemini</Text>
+              <Text>Daily Optimization</Text>
+              <Text>Powered by Gemini</Text>
             </View>
           </View>
-          <TouchableOpacity 
-            onPress={handleAnalyze} 
+          <TouchableOpacity
+            onPress={handleAnalyze}
             disabled={isAnalyzing}
-            className="bg-slate-50 dark:bg-slate-900 px-4 py-2 rounded-full"
           >
-            <Text className="text-[#4CB8A4] text-[10px] font-bold uppercase tracking-widest">
+            <Text>
               {isAnalyzing ? 'Analyzing...' : 'Refresh'}
             </Text>
           </TouchableOpacity>
         </View>
-        
+
         {isAnalyzing ? (
-          <View className="py-8 items-center">
+          <View>
             <ActivityIndicator color="#4CB8A4" />
-            <Text className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-4">Synthesizing Bio-data...</Text>
+            <Text>Synthesizing Bio-data...</Text>
           </View>
         ) : aiInsight ? (
           <Animated.View entering={FadeIn.duration(400)}>
-            <Text className="text-slate-600 dark:text-slate-300 text-[13px] leading-6 mb-5">
+            <Text>
               {aiInsight}
             </Text>
-            <TouchableOpacity 
-              onPress={onNavigateToChat} 
-              className="flex-row items-center self-start bg-teal-50/50 dark:bg-teal-900/10 px-4 py-2 rounded-xl"
+            <TouchableOpacity
+              onPress={onNavigateToChat}
             >
-              <Text className="text-[#4CB8A4] text-[11px] font-bold mr-2">Deep Dive with AI Coach</Text>
+              <Text>Deep Dive with AI Coach</Text>
               <ChevronRight size={14} color="#4CB8A4" />
             </TouchableOpacity>
           </Animated.View>
         ) : (
-          <View className="py-4 px-2 items-center">
-            <Text className="text-slate-400 text-xs italic text-center">Tap 'Refresh' to generate a real-time protocol based on your current vital markers.</Text>
+          <View>
+            <Text>Tap 'Refresh' to generate a real-time protocol based on your current vital markers.</Text>
           </View>
         )}
       </Animated.View>
 
       {/* Habit List */}
       <Animated.View entering={FadeInUp.delay(400)}>
-        <View className="flex-row justify-between items-center mb-5 px-1">
-          <Text className="text-xl font-bold text-slate-900 dark:text-white">Action Plan</Text>
+        <View>
+          <Text>Action Plan</Text>
           <Zap size={18} color="#94A3B8" />
         </View>
-        
-        <View className="mb-8">
+
+        <View>
           {habits.map((habit) => (
-            <TouchableOpacity 
+            <TouchableOpacity
               key={habit.id}
               onPress={() => toggleHabit(habit.id)}
               activeOpacity={0.7}
-              className="bg-white dark:bg-slate-800 p-5 rounded-[25px] mb-4 flex-row items-center justify-between shadow-sm border border-slate-50 dark:border-slate-700"
             >
-              <View className="flex-row items-center">
-                <View className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 items-center justify-center mr-4">
+              <View>
+                <View>
                   <Text style={{ fontSize: 24 }}>{habit.icon}</Text>
                 </View>
                 <View>
-                  <Text className={`font-bold text-[15px] ${habit.completed ? 'text-slate-300 line-through' : 'text-slate-800 dark:text-white'}`}>
+                  <Text style={{ fontWeight: 'bold', fontSize: 15, color: habit.completed ? '#CBD5E1' : '#1E293B', textDecorationLine: habit.completed ? 'line-through' : 'none' }}>
                     {habit.name}
                   </Text>
-                  <Text className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">{habit.category}</Text>
+                  <Text>{habit.category}</Text>
                 </View>
               </View>
               {habit.completed ? (
@@ -210,36 +205,35 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToChat, isDarkMode, t
 
       {/* Metrics Grid */}
       <Animated.View entering={FadeInUp.delay(500)}>
-        <Text className="text-xl font-bold text-slate-900 dark:text-white mb-5 px-1">Biological Vitals</Text>
-        <View className="flex-row flex-wrap justify-between">
+        <Text>Biological Vitals</Text>
+        <View>
           {wellnessMetrics.map((m, idx) => (
-            <View 
-              key={idx} 
-              className="w-[48%] bg-white dark:bg-slate-800 p-6 rounded-[35px] mb-4 shadow-sm border border-slate-50 dark:border-slate-700"
+            <View
+              key={idx}
             >
-              <View className="flex-row justify-between items-start mb-4">
-                <View className={`w-12 h-12 rounded-2xl items-center justify-center ${m.color}`}>
+              <View>
+                <View style={{ width: 48, height: 48, borderRadius: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: '#EEF2F6' }}>
                   <Text style={{ fontSize: 20 }}>{m.icon}</Text>
                 </View>
                 {m.trend && (
-                  <View className="flex-row items-center gap-1">
+                  <View>
                     {m.trend === 'up' ? <TrendingUp size={12} color="#4CB8A4" /> : <TrendingDown size={12} color="#EF4444" />}
-                    <Text className={`text-[9px] font-bold ${m.trend === 'up' ? 'text-[#4CB8A4]' : 'text-red-500'}`}>
+                    <Text style={{ fontSize: 9, fontWeight: 'bold', color: m.trend === 'up' ? '#4CB8A4' : '#EF4444' }}>
                       {m.trendValue}
                     </Text>
                   </View>
                 )}
               </View>
-              <Text className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">{m.title}</Text>
-              <View className="flex-row items-baseline">
-                <Text className="text-xl font-bold text-slate-900 dark:text-white">{m.value}</Text>
-                {m.unit !== '' && <Text className="text-slate-400 text-[10px] ml-1 font-bold">{m.unit}</Text>}
+              <Text>{m.title}</Text>
+              <View>
+                <Text>{m.value}</Text>
+                {m.unit !== '' && <Text>{m.unit}</Text>}
               </View>
             </View>
           ))}
         </View>
       </Animated.View>
-      
+
       <View style={{ height: 140 }} />
     </ScrollView>
   );

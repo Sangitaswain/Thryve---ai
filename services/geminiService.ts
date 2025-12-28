@@ -1,17 +1,20 @@
 
 import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
+import base64 from 'react-native-base64';
+import Constants from 'expo-constants';
 
-// Standard Base64 helpers
+// Standard Base64 helpers for React Native
 export const btoa = (input: string = '') => {
-  return window.btoa(input);
+  return base64.encode(input);
 };
 
 export const atob = (input: string = '') => {
-  return window.atob(input);
+  return base64.decode(input);
 };
 
 const getAI = () => {
-  return new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = Constants.expoConfig?.extra?.apiKey || '';
+  return new GoogleGenAI({ apiKey });
 };
 
 /**
