@@ -1,5 +1,9 @@
 
 import React from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Image, Switch, StyleSheet, Platform, Alert } from 'react-native';
+import { Camera, ChevronRight, Bell, Shield, LogOut, Sun, Moon, Award, Flame } from 'lucide-react-native';
+import * as Haptics from 'expo-haptics';
+import Animated, { FadeInUp, ZoomIn } from 'react-native-reanimated';
 
 interface ProfileScreenProps {
   isDarkMode: boolean;
@@ -7,90 +11,317 @@ interface ProfileScreenProps {
 }
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ isDarkMode, toggleTheme }) => {
+  
+  const handleToggle = async () => {
+    try {
+      if (Haptics && Haptics.selectionAsync) {
+        await Haptics.selectionAsync();
+      }
+    } catch (e) {
+      console.log('Haptics not supported on this device');
+    }
+    toggleTheme();
+  };
+
+  const handleLinkPress = (label: string) => {
+    try {
+      if (Haptics && Haptics.impactAsync) {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+    } catch (e) {}
+    
+    if (label === 'Sign Out') {
+      if (Platform.OS !== 'web') {
+        Alert.alert("Sign Out", "Are you sure you want to end your session?", [
+          { text: "Cancel", style: "cancel" },
+          { text: "Sign Out", style: "destructive", onPress: () => console.log('Sign Out') }
+        ]);
+      } else {
+        console.log(`Navigating to ${label}`);
+      }
+    } else {
+      console.log(`Navigating to ${label}`);
+    }
+  };
+
   return (
-    <div className="p-6 pt-12 space-y-8 pb-32 bg-[#EEF2F6] dark:bg-[#0F172A] min-h-screen animate-in fade-in duration-500 transition-colors duration-500">
-      <header className="flex flex-col items-center text-center">
-        <div className="relative mb-4">
-          <div className="w-28 h-28 rounded-[2.5rem] bg-white dark:bg-[#1E293B] border-4 border-white dark:border-[#1E293B] shadow-xl overflow-hidden flex items-center justify-center transition-colors">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Profile" className="w-full h-full object-cover" />
-          </div>
-          <button className="absolute -bottom-1 -right-1 w-10 h-10 bg-[#4CB8A4] rounded-2xl border-4 border-white dark:border-[#1E293B] flex items-center justify-center text-white shadow-lg shadow-[#4CB8A4]/20 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-          </button>
-        </div>
-        <h1 className="text-2xl font-semibold text-[#1F2933] dark:text-[#E5E7EB] tracking-tight transition-colors">Alex Thompson</h1>
-        <p className="text-[#6B7280] dark:text-[#9CA3AF] text-sm font-medium transition-colors">Wellness Enthusiast</p>
-      </header>
+    <ScrollView 
+      style={styles.container} 
+      contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={false}
+      bounces={true}
+    >
+      {/* Avatar Section */}
+      <View style={styles.avatarSection}>
+        <Animated.View entering={ZoomIn.duration(600)} style={styles.avatarWrapper}>
+          <View style={styles.avatarContainer} className="bg-white dark:bg-slate-800 border-white dark:border-slate-800 shadow-xl">
+            <Image 
+              source={{ uri: 'https://api.dicebear.com/7.x/avataaars/png?seed=Alex&backgroundColor=b6e3f4' }} 
+              style={styles.avatar}
+              resizeMode="cover"
+            />
+          </View>
+          <TouchableOpacity 
+            style={styles.cameraButton} 
+            className="bg-[#4CB8A4] border-[#EEF2F6] dark:border-[#0F172A] shadow-lg"
+            activeOpacity={0.8}
+            onPress={() => handleLinkPress('Camera')}
+          >
+            <Camera color="white" size={16} />
+          </TouchableOpacity>
+        </Animated.View>
+        
+        <Animated.View entering={FadeInUp.delay(200)} className="items-center">
+          <View className="flex-row items-center gap-2">
+            <Text style={styles.userName} className="text-slate-900 dark:text-white">Alex Thompson</Text>
+            <View className="bg-amber-100 dark:bg-amber-900/30 px-2 py-0.5 rounded-full flex-row items-center">
+              <Award size={10} color="#D97706" />
+              <Text className="text-[8px] font-bold text-amber-700 dark:text-amber-500 ml-1 uppercase">Pro</Text>
+            </View>
+          </View>
+          <Text style={styles.userRole} className="text-slate-500 dark:text-slate-400">Wellness Enthusiast</Text>
+        </Animated.View>
+      </View>
 
-      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2.5rem] p-6 shadow-[0_16px_48px_rgba(0,0,0,0.05)] dark:shadow-none flex justify-around items-center transition-colors">
-        <div className="text-center">
-          <p className="text-[#4CB8A4] text-2xl font-bold">14</p>
-          <p className="text-[10px] text-[#6B7280] dark:text-[#9CA3AF] font-bold uppercase tracking-widest transition-colors">Streak</p>
-        </div>
-        <div className="w-px h-8 bg-slate-50 dark:bg-slate-800 transition-colors"></div>
-        <div className="text-center">
-          <p className="text-[#6EC1E4] text-2xl font-bold">42</p>
-          <p className="text-[10px] text-[#6B7280] dark:text-[#9CA3AF] font-bold uppercase tracking-widest transition-colors">Active</p>
-        </div>
-        <div className="w-px h-8 bg-slate-50 dark:bg-slate-800 transition-colors"></div>
-        <div className="text-center">
-          <p className="text-[#4CB8A4] text-2xl font-bold">89%</p>
-          <p className="text-[10px] text-[#6B7280] dark:text-[#9CA3AF] font-bold uppercase tracking-widest transition-colors">Goal</p>
-        </div>
-      </section>
+      {/* Stats Row */}
+      <Animated.View 
+        entering={FadeInUp.delay(300)} 
+        style={styles.statsRow} 
+        className="bg-white dark:bg-slate-800 border border-slate-50 dark:border-slate-700 shadow-sm"
+      >
+        <View style={styles.statItem}>
+          <View className="flex-row items-center mb-1">
+            <Flame size={16} color="#4CB8A4" fill="#4CB8A4" />
+            <Text style={[styles.statValue, { color: '#4CB8A4', marginLeft: 4 }]}>14</Text>
+          </View>
+          <Text style={styles.statLabel}>Day Streak</Text>
+        </View>
+        <View style={styles.statDivider} className="bg-slate-100 dark:bg-slate-700" />
+        <StatItem label="Active Mins" value="42" color="#6EC1E4" />
+        <View style={styles.statDivider} className="bg-slate-100 dark:bg-slate-700" />
+        <StatItem label="Goal Score" value="89%" color="#4CB8A4" />
+      </Animated.View>
 
-      <section className="space-y-4">
-        <h3 className="text-[#1F2933] dark:text-[#E5E7EB] font-semibold text-lg ml-2 transition-colors">Settings</h3>
-        <div className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2rem] shadow-[0_16px_48px_rgba(0,0,0,0.05)] dark:shadow-none overflow-hidden transition-colors">
-          <div className="flex items-center justify-between p-5 border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-slate-50 dark:bg-[#0F172A] rounded-xl flex items-center justify-center text-lg">{isDarkMode ? '🌙' : '☀️'}</div>
-              <div className="text-left">
-                <span className="text-sm font-semibold text-[#1F2933] dark:text-[#E5E7EB] block transition-colors">Theme</span>
-                <span className="text-[10px] text-[#6B7280] dark:text-[#9CA3AF] font-bold uppercase tracking-wider transition-colors">{isDarkMode ? 'Dark' : 'Light'} Mode</span>
-              </div>
-            </div>
-            <button 
-              onClick={toggleTheme}
-              className={`w-12 h-6 rounded-full relative transition-all duration-300 ${isDarkMode ? 'bg-[#4CB8A4]' : 'bg-slate-200'}`}
-            >
-              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${isDarkMode ? 'left-7' : 'left-1'}`}></div>
-            </button>
-          </div>
-          <SettingsItem 
-            icon={<svg className="w-5 h-5 text-[#4CB8A4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>} 
+      {/* Settings Sections */}
+      <Animated.View entering={FadeInUp.delay(400)}>
+        <Text style={styles.sectionTitle} className="text-slate-900 dark:text-white">Preferences</Text>
+        <View style={styles.settingsMenu} className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+          
+          <View style={styles.menuItem} className="border-b border-slate-50 dark:border-slate-700">
+            <View style={styles.menuInfo}>
+              <View style={styles.menuIconBox} className="bg-slate-50 dark:bg-slate-900">
+                {isDarkMode ? <Moon size={18} color="#4CB8A4" /> : <Sun size={18} color="#4CB8A4" />}
+              </View>
+              <View>
+                <Text style={styles.menuLabel} className="text-slate-800 dark:text-white">Appearance</Text>
+                <Text style={styles.menuSublabel} className="text-slate-400 uppercase tracking-widest">{isDarkMode ? 'Dark Protocol' : 'Standard View'}</Text>
+              </View>
+            </View>
+            <Switch 
+              value={isDarkMode} 
+              onValueChange={handleToggle}
+              trackColor={{ false: '#E2E8F0', true: '#4CB8A4' }}
+              thumbColor="#FFFFFF"
+              ios_backgroundColor="#E2E8F0"
+            />
+          </View>
+
+          <SettingsLink 
+            icon={Bell} 
             label="Notifications" 
-            description="Daily wellness nudges"
+            sublabel="Tactile Nudges" 
+            onPress={() => handleLinkPress('Notifications')} 
           />
-          <SettingsItem 
-            icon={<svg className="w-5 h-5 text-[#6EC1E4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>} 
-            label="Privacy" 
-            description="Secure health data"
-            border={false}
+          <SettingsLink 
+            icon={Shield} 
+            label="Privacy & Security" 
+            sublabel="Biometric Lock" 
+            isLast 
+            onPress={() => handleLinkPress('Privacy')}
           />
-        </div>
-      </section>
+        </View>
+      </Animated.View>
 
-      <div className="pt-4">
-        <button className="w-full bg-[#FF8A80]/10 text-[#FF8A80] font-bold py-5 rounded-[2rem] active:scale-[0.98] transition-all">
-          Sign Out
-        </button>
-      </div>
-    </div>
+      {/* Sign Out Section */}
+      <Animated.View entering={FadeInUp.delay(500)}>
+        <TouchableOpacity 
+          onPress={() => handleLinkPress('Sign Out')}
+          style={styles.signOutButton} 
+          className="bg-red-50 dark:bg-red-900/10"
+          activeOpacity={0.6}
+        >
+          <LogOut color="#EF4444" size={18} style={{ marginRight: 10 }} />
+          <Text style={styles.signOutText}>Secure Logout</Text>
+        </TouchableOpacity>
+        
+        <Text className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-6">
+          Version 2.5.0 • Powered by Gemini Live
+        </Text>
+      </Animated.View>
+
+      <View style={{ height: 140 }} />
+    </ScrollView>
   );
 };
 
-const SettingsItem: React.FC<{ icon: any, label: string, description: string, border?: boolean }> = ({ icon, label, description, border = true }) => (
-  <button className={`w-full flex items-center justify-between p-5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${border ? 'border-b border-slate-50 dark:border-slate-800' : ''}`}>
-    <div className="flex items-center gap-4">
-      <div className="w-10 h-10 bg-slate-50 dark:bg-[#0F172A] rounded-xl flex items-center justify-center transition-colors">{icon}</div>
-      <div className="text-left">
-        <span className="text-sm font-semibold text-[#1F2933] dark:text-[#E5E7EB] block transition-colors">{label}</span>
-        <span className="text-[10px] text-[#6B7280] dark:text-[#9CA3AF] font-bold uppercase tracking-wider transition-colors">{description}</span>
-      </div>
-    </div>
-    <svg className="w-5 h-5 text-slate-200 dark:text-slate-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
-  </button>
+const StatItem = ({ label, value, color }: { label: string, value: string, color: string }) => (
+  <View style={styles.statItem}>
+    <Text style={[styles.statValue, { color }]}>{value}</Text>
+    <Text style={styles.statLabel}>{label}</Text>
+  </View>
 );
+
+const SettingsLink = ({ icon: Icon, label, sublabel, isLast, onPress }: { icon: any, label: string, sublabel: string, isLast?: boolean, onPress: () => void }) => (
+  <TouchableOpacity 
+    onPress={onPress}
+    activeOpacity={0.7}
+    style={[styles.menuItem, isLast && { borderBottomWidth: 0 }]} 
+    className="border-b border-slate-50 dark:border-slate-700"
+  >
+    <View style={styles.menuInfo}>
+      <View style={styles.menuIconBox} className="bg-slate-50 dark:bg-slate-900">
+        <Icon size={18} color="#4CB8A4" />
+      </View>
+      <View>
+        <Text style={styles.menuLabel} className="text-slate-800 dark:text-white">{label}</Text>
+        <Text style={styles.menuSublabel} className="text-slate-400 uppercase tracking-widest">{sublabel}</Text>
+      </View>
+    </View>
+    <ChevronRight size={16} color="#CBD5E1" />
+  </TouchableOpacity>
+);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 24,
+    paddingTop: Platform.OS === 'ios' ? 40 : 20,
+  },
+  avatarSection: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  avatarWrapper: {
+    position: 'relative',
+    marginBottom: 20,
+  },
+  avatarContainer: {
+    width: 120,
+    height: 120,
+    borderRadius: 45,
+    borderWidth: 6,
+    overflow: 'hidden',
+  },
+  avatar: {
+    width: '100%',
+    height: '100%',
+  },
+  cameraButton: {
+    position: 'absolute',
+    bottom: -4,
+    right: -4,
+    width: 44,
+    height: 44,
+    borderRadius: 18,
+    borderWidth: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  userName: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    letterSpacing: -0.5,
+  },
+  userRole: {
+    fontSize: 14,
+    marginTop: 4,
+    fontWeight: '500',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderRadius: 35,
+    padding: 24,
+    marginBottom: 40,
+  },
+  statItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statValue: {
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  statLabel: {
+    fontSize: 9,
+    color: '#94A3B8',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginTop: 2,
+  },
+  statDivider: {
+    width: 1,
+    height: 30,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    marginLeft: 8,
+    letterSpacing: -0.2,
+  },
+  settingsMenu: {
+    borderRadius: 30,
+    overflow: 'hidden',
+    marginBottom: 32,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
+    minHeight: 80,
+  },
+  menuInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  menuIconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  menuLabel: {
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  menuSublabel: {
+    fontSize: 9,
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+  signOutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 64,
+    borderRadius: 32,
+  },
+  signOutText: {
+    color: '#EF4444',
+    fontWeight: 'bold',
+    fontSize: 14,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  }
+});
 
 export default ProfileScreen;

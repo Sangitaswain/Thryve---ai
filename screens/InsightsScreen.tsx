@@ -1,133 +1,387 @@
 
-import React, { useState } from 'react';
-import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { AIInsight } from '../types';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator, Linking, StyleSheet, Dimensions } from 'react-native';
+import { searchHealthResearch } from '../services/geminiService';
+import { Search, ExternalLink, BookOpen, BarChart3, Info, Globe, MapPin } from 'lucide-react-native';
+import * as Haptics from 'expo-haptics';
+import Animated, { FadeInUp, FadeIn, Layout, useAnimatedStyle, useSharedValue, withTiming, withDelay } from 'react-native-reanimated';
 
-const data = [
-  { name: 'Mon', mood: 6, steps: 4200 },
-  { name: 'Tue', mood: 5, steps: 5500 },
-  { name: 'Wed', mood: 8, steps: 8200 },
-  { name: 'Thu', mood: 7, steps: 6100 },
-  { name: 'Fri', mood: 6, steps: 9500 },
-  { name: 'Sat', mood: 9, steps: 3200 },
-  { name: 'Sun', mood: 8, steps: 4800 },
+const { width } = Dimensions.get('window');
+
+const weeklyData = [
+  { day: 'Mon', mood: 60, activity: 40 },
+  { day: 'Tue', mood: 50, activity: 70 },
+  { day: 'Wed', mood: 80, activity: 85 },
+  { day: 'Thu', mood: 70, activity: 60 },
+  { day: 'Fri', mood: 65, activity: 90 },
+  { day: 'Sat', mood: 90, activity: 30 },
+  { day: 'Sun', mood: 85, activity: 45 },
 ];
 
-const mockInsights: AIInsight[] = [
-  {
-    id: 'i1',
-    type: 'journaling',
-    icon: '✍️',
-    content: "Journaling for 3 consecutive days shows a positive mood trend. You are 15% more radiant on these days.",
-    suggestion: "Maintain your 3-day streak (demo)"
-  },
-  {
-    id: 'i2',
-    type: 'activity',
-    icon: '⚡',
-    content: "You feel more energetic on days with light physical activity before noon.",
-    suggestion: "A 10-minute walk after lunch (demo)"
-  },
-  {
-    id: 'i3',
-    type: 'hydration',
-    icon: '💧',
-    content: "Hydration goals are missed more often on busy weekdays compared to weekends.",
-    suggestion: "Keep a water bottle at your desk (demo)"
-  }
-];
+const suggestedTopics = ["Deep Sleep Protocol", "VO2 Max Training", "Glycemic Index", "Cortisol Spikes"];
 
 const InsightsScreen: React.FC = () => {
-  const [hasData, setHasData] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [researchData, setResearchData] = useState<any>(null);
+  const [isSearching, setIsSearching] = useState(false);
+  
+  // Animation values for chart
+  const chartProgress = useSharedValue(0);
 
-  if (!hasData) {
-    return (
-      <div className="p-6 pt-12 flex flex-col items-center justify-center min-h-[80vh] text-center bg-[#EEF2F6] dark:bg-[#0F172A] animate-in fade-in duration-500">
-        <div className="w-24 h-24 bg-white dark:bg-[#1E293B] shadow-sm rounded-3xl flex items-center justify-center text-4xl mb-6">📊</div>
-        <h2 className="text-2xl font-semibold text-[#1F2933] dark:text-[#E5E7EB] transition-colors">Awaiting History</h2>
-        <p className="text-[#6B7280] dark:text-[#9CA3AF] text-sm mt-2 px-8 transition-colors">Patterns will appear once you have 3+ logs.</p>
-        <button onClick={() => setHasData(true)} className="mt-8 text-[#4CB8A4] font-bold text-[10px] uppercase tracking-widest">Simulate Data</button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    chartProgress.value = withDelay(500, withTiming(1, { duration: 1000 }));
+  }, []);
+
+  const handleSearch = async (queryOverride?: string) => {
+    const query = queryOverride || searchQuery;
+    if (!query.trim()) return;
+    
+    setIsSearching(true);
+    if (Haptics?.impactAsync) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+    
+    const result = await searchHealthResearch(query);
+    setResearchData(result);
+    setIsSearching(false);
+    
+    if (Haptics?.notificationAsync) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+  };
 
   return (
-    <div className="p-6 pt-12 space-y-10 pb-32 bg-[#EEF2F6] dark:bg-[#0F172A] min-h-screen transition-colors duration-500">
-      <header className="animate-in fade-in duration-500 px-2">
-        <h1 className="text-[28px] font-semibold text-[#1F2933] dark:text-[#E5E7EB] tracking-tight transition-colors">Your Progress</h1>
-        <p className="text-[#6B7280] dark:text-[#9CA3AF] text-sm mt-1 transition-colors">Holistic patterns for the week.</p>
-      </header>
+    <ScrollView 
+      style={styles.container} 
+      contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={false}
+    >
+      <Animated.View entering={FadeInUp.delay(100)} style={styles.header}>
+        <Text style={styles.title} className="text-slate-900 dark:text-white">Health Intelligence</Text>
+        <Text style={styles.subtitle} className="text-slate-500 dark:text-slate-400">Discover the science behind your vitals.</Text>
+      </Animated.View>
 
-      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2rem] p-7 shadow-[0_16px_48px_rgba(0,0,0,0.05)] dark:shadow-none transition-colors">
-        <div className="flex justify-between items-center mb-8 px-1">
-          <div>
-            <h3 className="font-semibold text-[#1F2933] dark:text-[#E5E7EB] text-lg transition-colors">Mood Flow</h3>
-            <p className="text-[10px] text-[#6B7280] dark:text-[#9CA3AF] font-bold uppercase tracking-widest transition-colors">Past 7 Days</p>
-          </div>
-        </div>
-        <div className="h-44 w-full -ml-4">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data}>
-              <defs>
-                <linearGradient id="colorMood" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#4CB8A4" stopOpacity={0.2}/>
-                  <stop offset="95%" stopColor="#4CB8A4" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="name" stroke="#6B7280" fontSize={10} axisLine={false} tickLine={false} dy={10} />
-              <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', backgroundColor: '#1E293B', color: '#E5E7EB', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
-              <Area type="monotone" dataKey="mood" stroke="#4CB8A4" strokeWidth={3} fill="url(#colorMood)" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </section>
+      {/* Research Card */}
+      <Animated.View 
+        entering={FadeInUp.delay(200)}
+        style={styles.card} 
+        className="bg-white dark:bg-slate-800 border border-slate-50 dark:border-slate-700 shadow-xl"
+      >
+        <View className="flex-row items-center mb-6">
+          <BookOpen size={20} color="#4CB8A4" style={{ marginRight: 10 }} />
+          <Text className="font-bold text-slate-800 dark:text-white text-lg">Bio-Research Library</Text>
+        </View>
 
-      {/* AI Insight Cards Section */}
-      <section className="space-y-6">
-        <div className="flex items-center justify-between px-2">
-           <h3 className="font-semibold text-[#1F2933] dark:text-[#E5E7EB] text-xl transition-colors">AI Insights</h3>
-           <span className="text-[9px] font-bold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-widest">Mock Demo</span>
-        </div>
-        
-        <div className="space-y-4">
-          {mockInsights.map((insight) => (
-            <div key={insight.id} className="bg-white dark:bg-[#1E293B] border border-slate-100 dark:border-slate-800 p-6 rounded-[2rem] shadow-[0_16px_48px_rgba(0,0,0,0.05)] transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">{insight.icon}</span>
-                  <h4 className="text-sm font-semibold text-[#1F2933] dark:text-[#E5E7EB]">AI Insight</h4>
-                </div>
-                <span className="text-[9px] font-bold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">Pattern Found</span>
-              </div>
-              <p className="text-[#1F2933] dark:text-[#E5E7EB] text-sm leading-relaxed font-normal mb-5">
-                {insight.content}
-              </p>
-              <div className="h-px bg-slate-100 dark:bg-slate-800 w-full mb-4"></div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold text-[#4CB8A4] uppercase tracking-widest">Try this:</span>
-                <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] font-medium">{insight.suggestion}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+        <View style={styles.searchBar}>
+          <View style={styles.inputWrapper} className="bg-slate-50 dark:bg-slate-900">
+            <TextInput 
+              style={styles.input}
+              className="text-slate-800 dark:text-white"
+              placeholder="Query physiological topics..."
+              placeholderTextColor="#94A3B8"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onSubmitEditing={() => handleSearch()}
+              returnKeyType="search"
+              autoCapitalize="none"
+            />
+          </View>
+          <TouchableOpacity 
+            onPress={() => handleSearch()}
+            disabled={isSearching}
+            style={styles.searchButton}
+            className="bg-[#4CB8A4]"
+          >
+            {isSearching ? <ActivityIndicator size="small" color="white" /> : <Search color="white" size={20} />}
+          </TouchableOpacity>
+        </View>
 
-      <section className="bg-white dark:bg-[#1E293B] border border-transparent dark:border-slate-800 rounded-[2rem] p-7 shadow-[0_16px_48px_rgba(0,0,0,0.05)] dark:shadow-none transition-colors">
-        <div className="flex justify-between items-baseline mb-8 px-1">
-          <h3 className="font-semibold text-[#1F2933] dark:text-[#E5E7EB] text-lg transition-colors">Activity</h3>
-          <span className="text-[9px] text-[#4CB8A4] font-bold uppercase tracking-widest bg-[#A8E6CF]/10 px-3 py-1 rounded-full border border-[#A8E6CF]/30 transition-colors">+12% vs last week</span>
-        </div>
-        <div className="h-44 w-full -ml-4">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
-              <XAxis dataKey="name" stroke="#6B7280" fontSize={10} axisLine={false} tickLine={false} dy={10} />
-              <Bar dataKey="steps" fill="#6EC1E4" radius={[8, 8, 8, 8]} barSize={20} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </section>
-    </div>
+        {!researchData && !isSearching && (
+          <View className="flex-row flex-wrap gap-2 mb-4">
+            {suggestedTopics.map((topic, i) => (
+              <TouchableOpacity 
+                key={topic}
+                onPress={() => {
+                  setSearchQuery(topic);
+                  handleSearch(topic);
+                }}
+                className="bg-slate-50 dark:bg-slate-900 px-3 py-2 rounded-xl border border-slate-100 dark:border-slate-800"
+              >
+                <Text className="text-[10px] font-bold text-slate-500 dark:text-slate-400">#{topic}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        {isSearching ? (
+          <View className="py-12 items-center">
+            <ActivityIndicator color="#4CB8A4" size="large" />
+            <Text className="text-[10px] text-slate-400 font-bold uppercase tracking-[4px] mt-6">Indexing Peer-Reviewed Data...</Text>
+          </View>
+        ) : researchData ? (
+          <Animated.View entering={FadeIn.duration(400)}>
+            <Text style={styles.researchText} className="text-slate-600 dark:text-slate-300">
+              {researchData.text}
+            </Text>
+            
+            <View style={styles.divider} className="bg-slate-100 dark:bg-slate-700" />
+            
+            <View className="flex-row items-center mb-4">
+              <Info size={12} color="#94A3B8" style={{ marginRight: 6 }} />
+              <Text className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Grounding Citations</Text>
+            </View>
+
+            <View style={styles.sourcesContainer}>
+              {researchData.sources.map((src: any, i: number) => {
+                const isMap = !!src.maps;
+                const uri = src.web?.uri || src.maps?.uri;
+                const title = src.web?.title || src.maps?.title || 'Scientific Publication';
+                if (!uri) return null;
+
+                return (
+                  <TouchableOpacity 
+                    key={i} 
+                    onPress={() => Linking.openURL(uri).catch(err => console.error("Couldn't load page", err))}
+                    style={styles.sourceLink}
+                    className="bg-slate-50 dark:bg-slate-900/50"
+                  >
+                    <View className="flex-row items-center flex-1">
+                      {isMap ? <MapPin size={12} color="#4CB8A4" /> : <Globe size={12} color="#4CB8A4" />}
+                      <Text numberOfLines={1} style={styles.sourceText} className="ml-2">{title}</Text>
+                    </View>
+                    <ExternalLink size={12} color="#94A3B8" />
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </Animated.View>
+        ) : (
+          <View style={styles.emptyState} className="bg-slate-50 dark:bg-slate-900/30">
+            <Text className="text-slate-400 text-[11px] italic text-center leading-5">
+              Enter a wellness topic to synthesize a multi-source research report. Thryve cross-references medical databases to provide the most current insights.
+            </Text>
+          </View>
+        )}
+      </Animated.View>
+
+      {/* Correlation Chart Card */}
+      <Animated.View 
+        entering={FadeInUp.delay(300)}
+        style={styles.card} 
+        className="bg-white dark:bg-slate-800 border border-slate-50 dark:border-slate-700 shadow-xl"
+      >
+        <View className="flex-row justify-between items-start mb-8">
+          <View>
+            <View className="flex-row items-center mb-1">
+              <BarChart3 size={20} color="#6EC1E4" style={{ marginRight: 10 }} />
+              <Text className="font-bold text-slate-800 dark:text-white text-lg">Biometric Flow</Text>
+            </View>
+            <Text className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Mood & Physical Activity Correlation</Text>
+          </View>
+        </View>
+
+        <View style={styles.chartArea}>
+          <View style={styles.yAxis}>
+            <Text style={styles.axisLabel}>Peak</Text>
+            <Text style={styles.axisLabel}>Mid</Text>
+            <Text style={styles.axisLabel}>Base</Text>
+          </View>
+          
+          <View style={styles.chartBars}>
+            {weeklyData.map((d, i) => (
+              <BarGroup key={i} data={d} progress={chartProgress} />
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.legend}>
+          <View className="flex-row items-center mr-4">
+            <View className="w-2 h-2 rounded-full bg-[#4CB8A4] mr-2" />
+            <Text style={styles.legendText}>Mood</Text>
+          </View>
+          <View className="flex-row items-center">
+            <View className="w-2 h-2 rounded-full bg-[#6EC1E4] mr-2" />
+            <Text style={styles.legendText}>Activity</Text>
+          </View>
+        </View>
+      </Animated.View>
+      
+      <View style={{ height: 120 }} />
+    </ScrollView>
   );
 };
+
+interface BarGroupProps {
+  data: any;
+  progress: any;
+}
+
+// Fixed: Added explicit React.FC typing to resolve "Property 'key' does not exist" in JSX iterations
+const BarGroup: React.FC<BarGroupProps> = ({ data, progress }) => {
+  const moodStyle = useAnimatedStyle(() => ({
+    height: `${data.mood * progress.value}%`,
+  }));
+
+  const activityStyle = useAnimatedStyle(() => ({
+    height: `${data.activity * progress.value}%`,
+  }));
+
+  return (
+    <View style={styles.barGroupWrapper}>
+      <View style={styles.barPair}>
+        <View style={styles.barTrack} className="bg-slate-50 dark:bg-slate-900">
+          <Animated.View style={[styles.bar, moodStyle]} className="bg-[#4CB8A4]" />
+        </View>
+        <View style={styles.barTrack} className="bg-slate-50 dark:bg-slate-900">
+          <Animated.View style={[styles.bar, activityStyle]} className="bg-[#6EC1E4]" />
+        </View>
+      </View>
+      <Text style={styles.chartLabel}>{data.day}</Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 24,
+  },
+  header: {
+    marginBottom: 32,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    letterSpacing: -0.5,
+  },
+  subtitle: {
+    fontSize: 14,
+    marginTop: 4,
+    lineHeight: 20,
+  },
+  card: {
+    borderRadius: 35,
+    padding: 24,
+    marginBottom: 24,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  inputWrapper: {
+    flex: 1,
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    height: 54,
+    justifyContent: 'center',
+  },
+  input: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  searchButton: {
+    width: 54,
+    height: 54,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#4CB8A4',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  emptyState: {
+    padding: 24,
+    borderRadius: 20,
+    marginTop: 8,
+  },
+  researchText: {
+    fontSize: 13,
+    lineHeight: 24,
+    marginBottom: 20,
+    fontWeight: '400',
+  },
+  divider: {
+    height: 1,
+    width: '100%',
+    marginBottom: 16,
+  },
+  sourcesContainer: {
+    gap: 8,
+  },
+  sourceLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 12,
+    borderRadius: 14,
+  },
+  sourceText: {
+    fontSize: 11,
+    color: '#4CB8A4',
+    fontWeight: 'bold',
+    maxWidth: '85%',
+  },
+  chartArea: {
+    height: 200,
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  yAxis: {
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    marginRight: 15,
+  },
+  axisLabel: {
+    fontSize: 9,
+    fontWeight: 'bold',
+    color: '#94A3B8',
+    textTransform: 'uppercase',
+  },
+  chartBars: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+  },
+  barGroupWrapper: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  barPair: {
+    flexDirection: 'row',
+    gap: 4,
+    height: 140,
+    alignItems: 'flex-end',
+  },
+  barTrack: {
+    width: 8,
+    height: '100%',
+    borderRadius: 4,
+    overflow: 'hidden',
+    justifyContent: 'flex-end',
+  },
+  bar: {
+    width: '100%',
+    borderRadius: 4,
+  },
+  chartLabel: {
+    fontSize: 9,
+    fontWeight: 'bold',
+    color: '#94A3B8',
+    marginTop: 12,
+  },
+  legend: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 24,
+  },
+  legendText: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#64748B',
+    textTransform: 'uppercase',
+  }
+});
 
 export default InsightsScreen;

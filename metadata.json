@@ -1,7 +1,27 @@
 {
-  "name": "Copy of Thryve Wellness",
-  "description": "A preventive healthcare and wellness app focused on long-term healthy habits with integrated AI coaching.",
+  "name": "Thryve Wellness",
+  "description": "Mobile preventive healthcare app built with React Native and Gemini AI.",
   "requestFramePermissions": [
-    "camera"
-  ]
+    "camera",
+    "microphone"
+  ],
+  "expo": {
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.thryve.wellness",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "audio",
+          "fetch"
+        ]
+      }
+    },
+    "android": {
+      "package": "com.thryve.wellness",
+      "permissions": [
+        "VIBRATE",
+        "INTERNET"
+      ]
+    }
+  }
 }

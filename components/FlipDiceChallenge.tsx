@@ -1,5 +1,20 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withSpring, 
+  withSequence, 
+  withTiming, 
+  runOnJS,
+  FadeIn
+} from 'react-native-reanimated';
+import * as Haptics from 'expo-haptics';
+import { Audio } from 'expo-av';
+import '../types';
+
+declare var require: any;
 
 const challenges = [
   "Drink 2 glasses of water 💧",
@@ -8,177 +23,214 @@ const challenges = [
   "Do 3 deep breaths 🧘‍♂️",
   "Stretch for 2 minutes 🤸",
   "Eat one serving of fruit 🍏",
-  "Stand up and move for 2 mins 🧘",
-  "Write down one thing you're grateful for 🙏",
-  "Avoid screens for 15 minutes 📵",
-  "Compliment someone today 😊"
 ];
 
-// Dot positions for 3x3 grid
-const pips = {
-  1: [4],
-  2: [0, 8],
-  3: [0, 4, 8],
-  4: [0, 2, 6, 8],
-  5: [0, 2, 4, 6, 8],
-  6: [0, 3, 6, 2, 5, 8],
-};
-
-const DiceFace: React.FC<{ value: number; transform: string; bgColor: string }> = ({ value, transform, bgColor }) => (
-  <div 
-    className="absolute inset-0 rounded-2xl flex items-center justify-center border border-black/5 shadow-inner"
-    style={{ 
-      transform, 
-      backfaceVisibility: 'hidden',
-      backgroundColor: bgColor,
-    }}
-  >
-    {/* Matte finish overlay */}
-    <div className="absolute inset-0 rounded-2xl shadow-[inset_0_2px_12px_rgba(0,0,0,0.08)] pointer-events-none" />
-    
-    <div className="grid grid-cols-3 grid-rows-3 w-12 h-12 p-1 relative z-10">
-      {Array.from({ length: 9 }).map((_, i) => (
-        <div key={i} className="flex items-center justify-center">
-          {pips[value as keyof typeof pips].includes(i) && (
-            <div className="w-2.5 h-2.5 bg-white rounded-full shadow-sm" />
-          )}
-        </div>
-      ))}
-    </div>
-  </div>
-);
+// Dot patterns for dice faces 1-6
+const diceDots = [
+  [4], // 1
+  [0, 8], // 2
+  [0, 4, 8], // 3
+  [0, 2, 6, 8], // 4
+  [0, 2, 4, 6, 8], // 5
+  [0, 2, 3, 5, 6, 8], // 6
+];
 
 const FlipDiceChallenge: React.FC = () => {
   const [currentChallenge, setCurrentChallenge] = useState<string | null>(null);
   const [isRolling, setIsRolling] = useState(false);
-  const [rotation, setRotation] = useState({ x: 20, y: -25, z: 0 });
-  const audioContextRef = useRef<AudioContext | null>(null);
+  const [dotsIndex, setDotsIndex] = useState(0);
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  
+  const rotateX = useSharedValue(20);
+  const rotateY = useSharedValue(-25);
+  const scale = useSharedValue(1);
 
-  const playRollSound = () => {
+  useEffect(() => {
+    return sound ? () => { sound.unloadAsync(); } : undefined;
+  }, [sound]);
+
+  const playSound = async () => {
     try {
-      if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      }
-      const ctx = audioContextRef.current;
-      
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = 'triangle'; 
-      osc.frequency.setValueAtTime(220, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.12);
-
-      gain.gain.setValueAtTime(0.05, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start();
-      osc.stop(ctx.currentTime + 0.12);
+      const asset = require('../assets/dice_roll.mp3');
+      const { sound: newSound } = await Audio.Sound.createAsync(asset);
+      setSound(newSound);
+      await newSound.playAsync();
     } catch (e) {
-      console.warn("Audio feedback failed:", e);
+      console.warn("Audio asset missing - skipping sound.");
     }
   };
 
   const rollDice = () => {
     if (isRolling) return;
-
     setIsRolling(true);
     setCurrentChallenge(null);
-    playRollSound();
+    
+    // Initial haptic impact
+    if (Haptics?.impactAsync) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => {});
+    }
+    
+    playSound();
 
-    // Fun tumble: random multiples of 90 degrees
-    const extraX = (Math.floor(Math.random() * 5) + 6) * 90;
-    const extraY = (Math.floor(Math.random() * 5) + 6) * 90;
-    const extraZ = (Math.floor(Math.random() * 3) + 3) * 90;
+    // Randomize face during roll
+    const rollInterval = setInterval(() => {
+      setDotsIndex(Math.floor(Math.random() * 6));
+    }, 100);
 
-    setRotation(prev => ({
-      x: prev.x + extraX,
-      y: prev.y + extraY,
-      z: prev.z + extraZ
-    }));
+    const targetX = rotateX.value + (Math.floor(Math.random() * 4) + 8) * 90;
+    const targetY = rotateY.value + (Math.floor(Math.random() * 4) + 8) * 90;
 
-    // Tumble duration matching the CSS transition
-    setTimeout(() => {
-      setIsRolling(false);
-      setCurrentChallenge(challenges[Math.floor(Math.random() * challenges.length)]);
-      
-      if ('vibrate' in navigator) {
-        navigator.vibrate(25);
+    scale.value = withSequence(
+      withSpring(1.4, { damping: 10, stiffness: 100 }), 
+      withSpring(1)
+    );
+    
+    rotateX.value = withTiming(targetX, { duration: 1200 });
+    rotateY.value = withTiming(targetY, { duration: 1200 }, (finished) => {
+      if (finished) {
+        runOnJS(clearInterval)(rollInterval);
+        runOnJS(finishRoll)();
       }
-    }, 850);
+    });
   };
 
+  const finishRoll = () => {
+    setIsRolling(false);
+    const finalIndex = Math.floor(Math.random() * 6);
+    setDotsIndex(finalIndex);
+    setCurrentChallenge(challenges[finalIndex]);
+    
+    if (Haptics?.notificationAsync) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    }
+  };
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { perspective: 1000 },
+      { rotateX: `${rotateX.value}deg` },
+      { rotateY: `${rotateY.value}deg` },
+      { scale: scale.value }
+    ] as any,
+  }));
+
   return (
-    <div className="relative bg-white dark:bg-[#1E293B] border border-slate-100 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-[0_4px_30px_rgba(0,0,0,0.02)] transition-all overflow-hidden group">
-      <div className="flex flex-col items-center text-center space-y-1 mb-8">
-        <h4 className="text-base font-semibold text-[#1F2933] dark:text-[#E5E7EB] tracking-tight transition-colors">Habit Dice</h4>
-        <p className="text-[10px] font-bold text-[#3FB7A3] uppercase tracking-[0.2em] transition-colors">Tap the colorful dice to roll</p>
-      </div>
+    <View style={styles.card} className="bg-white dark:bg-slate-800 border border-slate-50 dark:border-slate-700 shadow-sm">
+      <View className="mb-8 items-center">
+        <Text className="text-slate-400 text-[9px] font-bold uppercase tracking-widest mb-1">Stuck? Try a</Text>
+        <Text className="text-slate-800 dark:text-white font-bold text-2xl">Habit Roll</Text>
+      </View>
+      
+      <TouchableOpacity onPress={rollDice} activeOpacity={0.9} style={styles.diceWrapper}>
+        <Animated.View style={[styles.dice, animatedStyle]}>
+          <View style={styles.face} className="bg-[#4CB8A4] shadow-2xl">
+            <View style={styles.dotsGrid}>
+              {[...Array(9)].map((_, i) => (
+                <View key={i} style={styles.dotContainer}>
+                  {diceDots[dotsIndex].includes(i) && (
+                    <View style={styles.dot} className="bg-white" />
+                  )}
+                </View>
+              ))}
+            </View>
+          </View>
+        </Animated.View>
+      </TouchableOpacity>
 
-      <div className="flex flex-col items-center justify-center py-4 min-h-[260px]">
-        {/* Dice Container with Perspective */}
-        <div style={{ perspective: '1200px' }} className="mb-14 relative">
-          <div 
-            onClick={rollDice}
-            className={`relative w-20 h-20 transition-transform duration-[850ms] cursor-pointer ${isRolling ? 'scale-110' : 'scale-100 active:scale-90'}`}
-            style={{ 
-              transformStyle: 'preserve-3d',
-              transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
-              // Fun bounce-back settle effect
-              transitionTimingFunction: 'cubic-bezier(0.175, 0.885, 0.32, 1.15)'
-            }}
-          >
-            {/* 6 Multi-color Matte Faces */}
-            <DiceFace value={1} bgColor="#3FB7A3" transform="translateZ(40px)" />
-            <DiceFace value={6} bgColor="#6EC1E4" transform="rotateY(180deg) translateZ(40px)" />
-            <DiceFace value={3} bgColor="#F6D365" transform="rotateY(90deg) translateZ(40px)" />
-            <DiceFace value={4} bgColor="#F4A261" transform="rotateY(-90deg) translateZ(40px)" />
-            <DiceFace value={2} bgColor="#A8E6CF" transform="rotateX(90deg) translateZ(40px)" />
-            <DiceFace value={5} bgColor="#94A3B8" transform="rotateX(-90deg) translateZ(40px)" />
-          </div>
-          
-          {/* Natural Weight Shadow */}
-          <div className={`w-14 h-3 bg-black/5 dark:bg-black/40 blur-lg rounded-full mt-16 mx-auto transition-all duration-500 ${isRolling ? 'scale-150 opacity-10 translate-y-3' : 'scale-100 opacity-60 translate-y-0'}`} />
-        </div>
-
-        {/* Result Area */}
-        <div className="h-24 flex flex-col items-center justify-center text-center px-4 w-full">
-          {isRolling ? (
-            <p className="text-[11px] font-bold text-[#3FB7A3] uppercase tracking-[0.3em] animate-pulse">Tumbling...</p>
-          ) : currentChallenge ? (
-            <div className="animate-in fade-in zoom-in-95 duration-500 flex flex-col items-center space-y-5 w-full">
-              <p className="text-lg font-medium text-[#1F2933] dark:text-[#E5E7EB] max-w-[300px] leading-snug transition-colors">
-                {currentChallenge}
-              </p>
-              <button 
-                onClick={rollDice}
-                className="group w-full max-w-[180px] bg-[#3FB7A3] text-white text-[11px] font-bold uppercase tracking-[0.2em] py-4 rounded-2xl shadow-lg shadow-[#3FB7A3]/20 active:scale-95 transition-all flex items-center justify-center gap-2"
-              >
-                <span>Roll Again</span>
-                <span className="group-hover:rotate-12 transition-transform">🎲</span>
-              </button>
-            </div>
-          ) : (
-            <button 
-              onClick={rollDice}
-              className="group w-full max-w-[200px] bg-[#3FB7A3] text-white text-[11px] font-bold uppercase tracking-[0.2em] py-4.5 rounded-2xl shadow-lg shadow-[#3FB7A3]/20 active:scale-95 transition-all flex items-center justify-center gap-3"
-            >
-              <span>Roll the Dice</span>
-              <span className="group-hover:translate-y-[-2px] transition-transform">🎲</span>
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-4 pt-6 border-t border-slate-50 dark:border-slate-800 text-center opacity-60 transition-colors">
-        <p className="text-[9px] font-bold text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-[0.2em]">
-          Gamify your wellness journey
-        </p>
-      </div>
-    </div>
+      <View style={styles.challengeContainer}>
+        {isRolling ? (
+          <View className="items-center">
+            <Text className="text-[#4CB8A4] font-bold text-[10px] uppercase tracking-[4px]">Shaking...</Text>
+          </View>
+        ) : currentChallenge ? (
+          // Use FadeIn layout animation instead of withDelay(..., withTiming) to fix Type 'number' is not assignable to type 'EntryOrExitLayoutType'
+          <Animated.View entering={FadeIn.delay(200)} className="items-center">
+            <Text className="text-center text-slate-800 dark:text-white font-bold text-lg mb-6 px-4">
+              {currentChallenge}
+            </Text>
+            <TouchableOpacity onPress={rollDice} style={styles.button} className="bg-[#4CB8A4]">
+              <Text className="text-white font-bold text-[10px] uppercase tracking-widest">Roll Again</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        ) : (
+          <TouchableOpacity onPress={rollDice} style={styles.buttonLarge} className="bg-[#4CB8A4]">
+            <Text className="text-white font-bold text-xs uppercase tracking-widest">Tap to Gamble on a Habit</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  card: {
+    borderRadius: 40,
+    padding: 32,
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  diceWrapper: {
+    padding: 20,
+  },
+  dice: {
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  face: {
+    width: 100,
+    height: 100,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    elevation: 12,
+  },
+  dotsGrid: {
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    width: '100%',
+    height: '100%',
+  },
+  dotContainer: {
+    width: '33.33%',
+    height: '33.33%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+  },
+  challengeContainer: {
+    marginTop: 40,
+    minHeight: 120,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  button: {
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    borderRadius: 20,
+    shadowColor: '#4CB8A4',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  buttonLarge: {
+    paddingHorizontal: 36,
+    paddingVertical: 20,
+    borderRadius: 25,
+    shadowColor: '#4CB8A4',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 15,
+    elevation: 6,
+  }
+});
 
 export default FlipDiceChallenge;
